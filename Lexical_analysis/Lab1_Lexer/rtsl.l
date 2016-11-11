@@ -10,7 +10,7 @@ var_name [a-zA-Z][_a-zA-Z0-9]*
 digit [0-9]
 hex_digit 0[xX][0-9A-Fa-f]+ 
 oct_digit 0{digit}+
-comment (\/\*)[ \n]*.*[ \n]*(\*\/)
+comment \/\*([^\/]|[^\*]\/)*\*\/ 
 float_digit ({digit}*"."{digit}+)|({digit}+"."{digit}*)|({digit}+"."{digit}+)|({digit}+E(-)?{digit}+)
 %%
 
