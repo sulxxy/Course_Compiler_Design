@@ -15,19 +15,19 @@ float_digit ({digit}*"."{digit}+)|({digit}+"."{digit}*)|({digit}+"."{digit}+)
 float_digit_with_exponent {float_digit}[eE](-)?{digit}+
 %%
 
-{comment} {}
+{comment}|\/\/.*$ {}
 
-true|false { printf("BOOL %s\n", yytext); }
+true\b|false\b { printf("BOOL %s\n", yytext); }
 
 (({hex_digit}+)|({oct_digit})|({digit}+))(u)? { printf("INT: %d\n", atoi(yytext));}
 
 ({float_digit_with_exponent}|{float_digit})(f|lf)? { printf("FLOAT %g\n", atof(yytext));}
 
-int|float|bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light { printf("TYPE %s\n", yytext); }
+(int|float|bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light)\b { printf("TYPE %s\n", yytext); }
 
-attribute|uniform|varying|const|public|private|scratch { printf("QUALIFIER %s\n", yytext); }
+(attribute|uniform|varying|const|public|private|scratch) { printf("QUALIFIER %s\n", yytext); }
 
-class|break|case|const|continue|default|do|double|else|enum|extern|for|goto|if|sizeof|static|struct|switch|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace { printf("KEYWORD %s\n", yytext);}
+(class|break|case|const|continue|default|do|double|else|enum|extern|for|goto|if|sizeof|static|struct|switch|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace)\b { printf("KEYWORD %s\n", yytext);}
 
 rt_{var_name} { printf("STATE %s\n", yytext);}
 
