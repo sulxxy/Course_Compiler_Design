@@ -11,16 +11,17 @@ digit [0-9]
 hex_digit 0[xX][0-9A-Fa-f]+ 
 oct_digit 0{digit}+
 comment \/\*([^\/]|[^\*]\/)*\*\/ 
-float_digit ({digit}*"."{digit}+)|({digit}+"."{digit}*)|({digit}+"."{digit}+)|({digit}+E(-)?{digit}+)
+float_digit ({digit}*"."{digit}+)|({digit}+"."{digit}*)|({digit}+"."{digit}+)
+float_digit_with_exponent {float_digit}[eE](-)?{digit}+
 %%
 
 {comment} {}
 
 true|false { printf("BOOL %s\n", yytext); }
 
-({digit}+)|({hex_digit}+)|({oct_digit}) { printf("INT: %d\n", atoi(yytext));}
+(({hex_digit}+)|({oct_digit})|({digit}+))(u)? { printf("INT: %d\n", atoi(yytext));}
 
-{float_digit}(f|lf)? { printf("FLOAT %g\n", atof(yytext));}
+({float_digit_with_exponent}|{float_digit})(f|lf)? { printf("FLOAT %g\n", atof(yytext));}
 
 int|float|bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light { printf("TYPE %s\n", yytext); }
 
@@ -62,7 +63,13 @@ rt_{var_name} { printf("STATE %s\n", yytext);}
 . {printf("ERROR(%d): Unrecognized symbol \"%s\"\n", linenumber, yytext);}
 %%
 
-int main(){
+int main(int argc, char** argv){
+	if(argc > 1){
+		yyin = fopen(argv[1], "r");
+	}
+	else{
+		yyin = stdin;
+	}
 	yylex();
 	return 0;
 }
