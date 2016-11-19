@@ -9,35 +9,24 @@
 %{
 #include <stdio.h>
 #include <math.h>
-int linenumber = 1;
+int linenumber = 0;
 %}
 var_name [a-zA-Z][_a-zA-Z0-9]*
 digit [0-9]
 hex_digit 0[xX][0-9A-Fa-f]+ 
 oct_digit 0{digit}+
-/* block_comment \/\*([^\/]|[^\*]\/)*\*\/ 
-   this expression works well for recognizing blockcomments. However, for this expression, it's unable to count the line numbers inside the block. So I don't use this.
-*/
-line_comment \/\/.*$
-%x C_BLOCK_COMMENT
+comment \/\*([^\/]|[^\*]\/)*\*\/ 
 float_digit ({digit}*"."{digit}+)|({digit}+"."{digit}*)|({digit}+"."{digit}+)
-float_digit_with_exponent ({float_digit}|{digit}+)[eE](\+|-)?{digit}+
+float_digit_with_exponent {float_digit}[eE](-)?{digit}+
 %%
 
-
-"/*"                  { BEGIN(C_BLOCK_COMMENT); }
-<C_BLOCK_COMMENT>"*/" { BEGIN(INITIAL); }
-<C_BLOCK_COMMENT>\n   { linenumber++;}
-<C_BLOCK_COMMENT>.    { }
-
-{line_comment} {}
+{comment}|\/\/.*$ {}
 
 true\b|false\b { printf("BOOL %s\n", yytext); }
 
-({float_digit_with_exponent}|{float_digit})(f|lf|F|LF)? { printf("FLOAT %s\n", yytext);}
+(({hex_digit}+)|({oct_digit})|({digit}+))(u|U)? { printf("INT %d\n", atoi(yytext));}
 
-(({hex_digit}+)|({oct_digit})|({digit}+))(u|U)? { printf("INT %s\n", yytext);}
-
+({float_digit_with_exponent}|{float_digit})(f|lf|F\LF)? { printf("FLOAT %g\n", atof(yytext));}
 
 (int|float|bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light)\b { printf("TYPE %s\n", yytext); }
 

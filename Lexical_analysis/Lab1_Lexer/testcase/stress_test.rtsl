@@ -1,0 +1,74 @@
+// Integer literals
+0
+0u
+0U
+123456789
+123456789u
+123456789U
+01234567
+01234567u
+01234567U
+0x0123456789ABCDEF
+0X0123456789abcdef
+0X0123456789abcdefU
+0X0123456789abcdefu
+
+// Floating-point literals
+0.0
+.0
+0.
+0123456789.0123456789
+.0123456789
+0123456789.
+12e45
+12e-45
+12e+45
+12E45
+12E-45
+12E+45
+0123456789e0123456789
+12.34E56
+.34E56
+12.E56
+0.0f
+0.0lf
+0.0F
+0.0LF
+12e+45lf
+
+// NOT integer literals
+0x
+0X
+
+// NOT floating-point literals
+.
+5f
+5lf
+
+// Comments (interleaved with identifiers)
+
+/**/
+A
+/* !#$ */
+B
+/*
+
+*/
+C
+/*
+ *
+ */
+D
+/* *** */
+E
+/* ***
+*/
+F
+/* ***/
+G
+//
+H
+
+// Three errors
+
+###
