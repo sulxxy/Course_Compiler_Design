@@ -81,6 +81,6 @@ After this, we already have a C file named rtsl.l.c, which can be compiled by *g
 > gcc rtsl.l.c -o rtsl.l.out -lfl
 
 Now, we got a rtsl.l.out which can be excuted to recognize \*.rtsl file.
-> ./rtsl.l.out < sphere.rtsl > sphere.out
+> ./rtsl.l.out sphere.rtsl > sphere.out
 
 All of test input files(.rtsl) and corresponding output(.out) can be found in the folder ./testcase.
