@@ -1,0 +1,32 @@
+/*
+  Test 3, dangling else.
+  Lexical and parsing error-free.
+*/ 
+
+class Test3 : rt_Material;
+
+float foo(int i, bool k) {
+  if(i<0)
+    return 0.0;
+  else
+    if(k) 
+      return .5;
+    else
+      return 1.0;
+}
+
+
+void shade() {
+  int i;
+  float f;
+  bool k;
+
+  i = 0;
+  k = true;
+  f = foo(i,k);
+
+  rt_SampleColor = color(f);
+}
+
+
+

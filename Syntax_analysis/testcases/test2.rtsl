@@ -1,0 +1,22 @@
+/*
+  Test 2, public variable definitions.
+  Lexical and parsing error-free.
+*/ 
+
+class Test2 : rt_Camera;
+
+public vec3 position;
+public vec3 direction;
+
+void constructor(vec3 p, vec3 d)
+{
+  position = p;
+  direction = d;
+}
+
+void generateRay()
+{
+  rt_RayOrigin = position;
+  rt_RayDirection = direction;
+}
+

@@ -1,0 +1,45 @@
+/* Material implementing Schlick's approximation. */
+class SchlickDielectric : rt_Material;
+public float eta;
+public float f0;
+public color absorption;
+
+void constructor(float inside, float outside, color absorb) {
+  eta = inside/outside;
+  f0 = pow((outside-inside)/(outside+inside), 2);
+  absorption = absorb;
+}
+
+void shade() {
+  // Section 0
+  vec3 I = normalize(rt_RayDirection);
+  vec3 P = rt_HitPoint;
+  vec3 NN = rt_ShadingNormal;
+  float eta_temp = eta;
+  color atten = color(1.);
+  if (dot(rt_RayDirection, rt_ShadingNormal) > 0.) {
+    eta_temp = 1./eta;
+    NN = -NN;
+    atten = pow(absorption, rt_HitDistance);
+  }
+  float negNdotV = dot(I, NN);
+  float k = 1.0 - eta_temp * eta_temp * (1. - negNdotV * negNdotV);
+  vec3 R = reflect(I, NN);
+  vec3 T = R;
+  if (k >= 0.) {
+    T = eta_temp * I - (eta_temp * negNdotV + sqrt(k)) * NN;
+  }
+  float Fr = f0 + (1.-f0)*pow(1.+negNdotV, 5);
+  float Ft = 1.-Fr;
+  
+  // Section 1
+  color refl_result = trace(P, R);
+
+  // Section 2
+  color refr_result = trace(P, T);
+  
+  // Section 3
+  rt_SampleColor = atten * (Fr * refl_result + Ft * refr_result);
+
+  }
+  

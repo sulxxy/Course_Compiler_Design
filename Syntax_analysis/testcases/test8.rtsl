@@ -1,0 +1,30 @@
+/*
+  Test 8, a camera shader cannot access to rt_TextureUVW (see Table 1 in the paper).
+  Parsing error: "Error: camera cannot access to a state of texture"
+*/ 
+
+class PinholeCamera : rt_Camera;
+public vec3 position;
+public vec3 lower_left_corner;
+public vec3 uvw_u;
+public vec3 uvw_v;
+public vec3 uvw_w;
+
+void constructor(vec3 eye, vec3 up, vec3 gaze, vec2 uv0, vec2 uv1, float d)
+{
+  position = eye;
+  uvw_v = up;
+  uvw_w = gaze;
+  uvw_u = normalize( cross( uvw_v, uvw_w ) );
+  uvw_v = normalize( cross( uvw_w, uvw_u ) );
+  uvw_w = normalize( gaze );
+  lower_left_corner = uv0.x * uvw_u + uv0.y * uvw_v + d * uvw_w;
+  uvw_u = uvw_u * (uv1.x - uv0.x);
+  uvw_v = uvw_v * (uv1.y - uv0.y);
+}
+
+void generateRay()
+{
+  rt_RayOrigin = rt_TextureUVW;
+  rt_RayDirection = lower_left_corner + rt_ScreenCoord.x*uvw_u + rt_ScreenCoord.y*uvw_v;
+}

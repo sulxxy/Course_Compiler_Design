@@ -20,16 +20,16 @@ calclist: /* nothing */
  ;
 
 exp: factor
- | exp ADD exp { $$ = $1 + $3; }
- | exp SUB factor { $$ = $1 - $3; }
+ | exp ADD exp { $$ = $1 + $3;  printf("ADD\n");}
+ | exp SUB factor { $$ = $1 - $3; printf("SUB\n");}
  ;
 
 factor: term
- | factor MUL term { $$ = $1 * $3; }
- | factor DIV term { $$ = $1 / $3; }
+ | factor MUL term { $$ = $1 * $3; printf("MUL\n");}
+ | factor DIV term { $$ = $1 / $3; printf("DIV\n");}
  ;
 
-term: NUMBER
+term: NUMBER {printf("%d\n", $1);}
  | ABS exp ABS { $$ = $2 >= 0 ? $2 : - $2; }
  | OP exp CP { $$ = $2; }
  ;

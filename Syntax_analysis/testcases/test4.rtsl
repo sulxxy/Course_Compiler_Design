@@ -1,0 +1,41 @@
+/*
+  Test 4, while, for and correct identification of "public" as class scope variable modifier.
+  Lexical and parsing error-free.
+*/ 
+
+class Test4 : rt_Material;
+
+public float a;
+
+void constructor(int alpha) {
+  a = alpha;
+}
+
+
+void shade() {
+  float f = 0;
+
+
+  if(a < 0)
+    f = 1; 
+  else 
+    f = 2; 
+
+  if (a < 0) {
+    a = 3; 
+  }
+  else {
+    a = 4; 
+  }
+
+  while (a > 0) {
+    f += 0.01;
+  }
+
+  int j;
+  for(j = 0; j < 10; j++)
+    f = f * j;
+
+
+  rt_SampleColor = color(f);
+}

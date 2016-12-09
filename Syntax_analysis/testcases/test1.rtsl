@@ -1,0 +1,24 @@
+/*
+  Test 1, simple if/else.
+  Lexical and parsing error-free.
+*/ 
+
+class Test1 : rt_Material;
+
+float foo(int i) {
+  if(i<0)
+    return 0.0;
+  else
+    return 1.0;
+}
+
+
+void shade() {
+  int i;
+  float f;
+
+  i = 0;
+  f = foo(i);
+
+  rt_SampleColor = color(f);
+}

@@ -1,0 +1,284 @@
+State 19 conflicts: 2 shift/reduce
+
+
+Grammar
+
+    0 $accept: calclist $end
+
+    1 calclist: /* empty */
+    2         | calclist exp EOL
+    3         | calclist EOL
+
+    4 exp: factor
+    5    | exp ADD exp
+    6    | exp SUB factor
+
+    7 factor: term
+    8       | factor MUL term
+    9       | factor DIV term
+
+   10 term: NUMBER
+   11     | ABS exp ABS
+   12     | OP exp CP
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+NUMBER (258) 10
+ADD (259) 5
+SUB (260) 6
+MUL (261) 8
+DIV (262) 9
+ABS (263) 11
+OP (264) 12
+CP (265) 12
+EOL (266) 2 3
+
+
+Nonterminals, with rules where they appear
+
+$accept (12)
+    on left: 0
+calclist (13)
+    on left: 1 2 3, on right: 0 2 3
+exp (14)
+    on left: 4 5 6, on right: 2 5 6 11 12
+factor (15)
+    on left: 7 8 9, on right: 4 6 8 9
+term (16)
+    on left: 10 11 12, on right: 7 8 9
+
+
+state 0
+
+    0 $accept: . calclist $end
+
+    $default  reduce using rule 1 (calclist)
+
+    calclist  go to state 1
+
+
+state 1
+
+    0 $accept: calclist . $end
+    2 calclist: calclist . exp EOL
+    3         | calclist . EOL
+
+    $end    shift, and go to state 2
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+    EOL     shift, and go to state 6
+
+    exp     go to state 7
+    factor  go to state 8
+    term    go to state 9
+
+
+state 2
+
+    0 $accept: calclist $end .
+
+    $default  accept
+
+
+state 3
+
+   10 term: NUMBER .
+
+    $default  reduce using rule 10 (term)
+
+
+state 4
+
+   11 term: ABS . exp ABS
+
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+
+    exp     go to state 10
+    factor  go to state 8
+    term    go to state 9
+
+
+state 5
+
+   12 term: OP . exp CP
+
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+
+    exp     go to state 11
+    factor  go to state 8
+    term    go to state 9
+
+
+state 6
+
+    3 calclist: calclist EOL .
+
+    $default  reduce using rule 3 (calclist)
+
+
+state 7
+
+    2 calclist: calclist exp . EOL
+    5 exp: exp . ADD exp
+    6    | exp . SUB factor
+
+    ADD  shift, and go to state 12
+    SUB  shift, and go to state 13
+    EOL  shift, and go to state 14
+
+
+state 8
+
+    4 exp: factor .
+    8 factor: factor . MUL term
+    9       | factor . DIV term
+
+    MUL  shift, and go to state 15
+    DIV  shift, and go to state 16
+
+    $default  reduce using rule 4 (exp)
+
+
+state 9
+
+    7 factor: term .
+
+    $default  reduce using rule 7 (factor)
+
+
+state 10
+
+    5 exp: exp . ADD exp
+    6    | exp . SUB factor
+   11 term: ABS exp . ABS
+
+    ADD  shift, and go to state 12
+    SUB  shift, and go to state 13
+    ABS  shift, and go to state 17
+
+
+state 11
+
+    5 exp: exp . ADD exp
+    6    | exp . SUB factor
+   12 term: OP exp . CP
+
+    ADD  shift, and go to state 12
+    SUB  shift, and go to state 13
+    CP   shift, and go to state 18
+
+
+state 12
+
+    5 exp: exp ADD . exp
+
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+
+    exp     go to state 19
+    factor  go to state 8
+    term    go to state 9
+
+
+state 13
+
+    6 exp: exp SUB . factor
+
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+
+    factor  go to state 20
+    term    go to state 9
+
+
+state 14
+
+    2 calclist: calclist exp EOL .
+
+    $default  reduce using rule 2 (calclist)
+
+
+state 15
+
+    8 factor: factor MUL . term
+
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+
+    term  go to state 21
+
+
+state 16
+
+    9 factor: factor DIV . term
+
+    NUMBER  shift, and go to state 3
+    ABS     shift, and go to state 4
+    OP      shift, and go to state 5
+
+    term  go to state 22
+
+
+state 17
+
+   11 term: ABS exp ABS .
+
+    $default  reduce using rule 11 (term)
+
+
+state 18
+
+   12 term: OP exp CP .
+
+    $default  reduce using rule 12 (term)
+
+
+state 19
+
+    5 exp: exp . ADD exp
+    5    | exp ADD exp .
+    6    | exp . SUB factor
+
+    ADD  shift, and go to state 12
+    SUB  shift, and go to state 13
+
+    ADD       [reduce using rule 5 (exp)]
+    SUB       [reduce using rule 5 (exp)]
+    $default  reduce using rule 5 (exp)
+
+
+state 20
+
+    6 exp: exp SUB factor .
+    8 factor: factor . MUL term
+    9       | factor . DIV term
+
+    MUL  shift, and go to state 15
+    DIV  shift, and go to state 16
+
+    $default  reduce using rule 6 (exp)
+
+
+state 21
+
+    8 factor: factor MUL term .
+
+    $default  reduce using rule 8 (factor)
+
+
+state 22
+
+    9 factor: factor DIV term .
+
+    $default  reduce using rule 9 (factor)

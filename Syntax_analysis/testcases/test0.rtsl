@@ -1,0 +1,9 @@
+/*
+  Test 0, simple empty shader.
+  Lexical and parsing error-free.
+*/ 
+
+class Test0 : rt_Material;
+
+
+

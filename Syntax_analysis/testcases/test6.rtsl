@@ -1,0 +1,18 @@
+/*
+  Test 6, rt_Camera shouldn't define any shade.
+  Parsing error: "Error: camera cannot have an interface method of material"
+*/ 
+class Test6 : rt_Camera;
+
+public float eta;
+public float f0;
+public color absorption;
+
+void constructor(float inside, float outside, color absorb) {
+  eta = inside/outside;
+  f0 = pow((outside-inside)/(outside+inside), 2);
+  absorption = absorb;
+}
+
+void shade() {}
+

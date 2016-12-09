@@ -1,0 +1,321 @@
+Terminals which are not used
+
+   IDENTIFIER
+   I_CONSTANT
+   F_CONSTANT
+   STRING_LITERAL
+   FUNC_NAME
+   SIZEOF
+   PTR_OP
+   INC_OP
+   DEC_OP
+   LEFT_OP
+   RIGHT_OP
+   LE_OP
+   GE_OP
+   EQ_OP
+   NE_OP
+   AND_OP
+   OR_OP
+   MUL_ASSIGN
+   DIV_ASSIGN
+   MOD_ASSIGN
+   ADD_ASSIGN
+   SUB_ASSIGN
+   LEFT_ASSIGN
+   RIGHT_ASSIGN
+   AND_ASSIGN
+   XOR_ASSIGN
+   OR_ASSIGN
+   TYPEDEF_NAME
+   ENUMERATION_CONSTANT
+   TYPEDEF
+   EXTERN
+   STATIC
+   AUTO
+   REGISTER
+   INLINE
+   CONST
+   RESTRICT
+   VOLATILE
+   BOOL
+   CHAR
+   SHORT
+   INT
+   LONG
+   SIGNED
+   UNSIGNED
+   FLOAT
+   DOUBLE
+   VOID
+   COMPLEX
+   IMAGINARY
+   STRUCT
+   UNION
+   ENUM
+   ELLIPSIS
+   CASE
+   DEFAULT
+   SWITCH
+   WHILE
+   DO
+   FOR
+   GOTO
+   CONTINUE
+   BREAK
+   RETURN
+   ALIGNAS
+   ALIGNOF
+   ATOMIC
+   GENERIC
+   NORETURN
+   STATIC_ASSERT
+   THREAD_LOCAL
+
+
+Grammar
+
+    0 $accept: selection_statement $end
+
+    1 statement: A
+    2          | B
+    3          | C
+    4          | D
+    5          | E
+    6          | selection_statement
+
+    7 selection_statement: IF '(' statement ')' statement ELSE statement
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 7
+')' (41) 7
+error (256)
+IDENTIFIER (258)
+I_CONSTANT (259)
+F_CONSTANT (260)
+STRING_LITERAL (261)
+FUNC_NAME (262)
+SIZEOF (263)
+PTR_OP (264)
+INC_OP (265)
+DEC_OP (266)
+LEFT_OP (267)
+RIGHT_OP (268)
+LE_OP (269)
+GE_OP (270)
+EQ_OP (271)
+NE_OP (272)
+AND_OP (273)
+OR_OP (274)
+MUL_ASSIGN (275)
+DIV_ASSIGN (276)
+MOD_ASSIGN (277)
+ADD_ASSIGN (278)
+SUB_ASSIGN (279)
+LEFT_ASSIGN (280)
+RIGHT_ASSIGN (281)
+AND_ASSIGN (282)
+XOR_ASSIGN (283)
+OR_ASSIGN (284)
+TYPEDEF_NAME (285)
+ENUMERATION_CONSTANT (286)
+TYPEDEF (287)
+EXTERN (288)
+STATIC (289)
+AUTO (290)
+REGISTER (291)
+INLINE (292)
+CONST (293)
+RESTRICT (294)
+VOLATILE (295)
+BOOL (296)
+CHAR (297)
+SHORT (298)
+INT (299)
+LONG (300)
+SIGNED (301)
+UNSIGNED (302)
+FLOAT (303)
+DOUBLE (304)
+VOID (305)
+COMPLEX (306)
+IMAGINARY (307)
+STRUCT (308)
+UNION (309)
+ENUM (310)
+ELLIPSIS (311)
+CASE (312)
+DEFAULT (313)
+IF (314) 7
+ELSE (315) 7
+SWITCH (316)
+WHILE (317)
+DO (318)
+FOR (319)
+GOTO (320)
+CONTINUE (321)
+BREAK (322)
+RETURN (323)
+ALIGNAS (324)
+ALIGNOF (325)
+ATOMIC (326)
+GENERIC (327)
+NORETURN (328)
+STATIC_ASSERT (329)
+THREAD_LOCAL (330)
+A (331) 1
+B (332) 2
+C (333) 3
+D (334) 4
+E (335) 5
+
+
+Nonterminals, with rules where they appear
+
+$accept (83)
+    on left: 0
+statement (84)
+    on left: 1 2 3 4 5 6, on right: 7
+selection_statement (85)
+    on left: 7, on right: 0 6
+
+
+state 0
+
+    0 $accept: . selection_statement $end
+
+    IF  shift, and go to state 1
+
+    selection_statement  go to state 2
+
+
+state 1
+
+    7 selection_statement: IF . '(' statement ')' statement ELSE statement
+
+    '('  shift, and go to state 3
+
+
+state 2
+
+    0 $accept: selection_statement . $end
+
+    $end  shift, and go to state 4
+
+
+state 3
+
+    7 selection_statement: IF '(' . statement ')' statement ELSE statement
+
+    IF  shift, and go to state 1
+    A   shift, and go to state 5
+    B   shift, and go to state 6
+    C   shift, and go to state 7
+    D   shift, and go to state 8
+    E   shift, and go to state 9
+
+    statement            go to state 10
+    selection_statement  go to state 11
+
+
+state 4
+
+    0 $accept: selection_statement $end .
+
+    $default  accept
+
+
+state 5
+
+    1 statement: A .
+
+    $default  reduce using rule 1 (statement)
+
+
+state 6
+
+    2 statement: B .
+
+    $default  reduce using rule 2 (statement)
+
+
+state 7
+
+    3 statement: C .
+
+    $default  reduce using rule 3 (statement)
+
+
+state 8
+
+    4 statement: D .
+
+    $default  reduce using rule 4 (statement)
+
+
+state 9
+
+    5 statement: E .
+
+    $default  reduce using rule 5 (statement)
+
+
+state 10
+
+    7 selection_statement: IF '(' statement . ')' statement ELSE statement
+
+    ')'  shift, and go to state 12
+
+
+state 11
+
+    6 statement: selection_statement .
+
+    $default  reduce using rule 6 (statement)
+
+
+state 12
+
+    7 selection_statement: IF '(' statement ')' . statement ELSE statement
+
+    IF  shift, and go to state 1
+    A   shift, and go to state 5
+    B   shift, and go to state 6
+    C   shift, and go to state 7
+    D   shift, and go to state 8
+    E   shift, and go to state 9
+
+    statement            go to state 13
+    selection_statement  go to state 11
+
+
+state 13
+
+    7 selection_statement: IF '(' statement ')' statement . ELSE statement
+
+    ELSE  shift, and go to state 14
+
+
+state 14
+
+    7 selection_statement: IF '(' statement ')' statement ELSE . statement
+
+    IF  shift, and go to state 1
+    A   shift, and go to state 5
+    B   shift, and go to state 6
+    C   shift, and go to state 7
+    D   shift, and go to state 8
+    E   shift, and go to state 9
+
+    statement            go to state 15
+    selection_statement  go to state 11
+
+
+state 15
+
+    7 selection_statement: IF '(' statement ')' statement ELSE statement .
+
+    $default  reduce using rule 7 (selection_statement)
