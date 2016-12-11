@@ -41,6 +41,7 @@ static int check_type(void);
 
 
 "A"                                     { return(A);}
+"EA"                                     { return(EA);}
 "B"                                     { return(B);}
 "C"                                     { return(C);}
 "D"                                     { return(D);}

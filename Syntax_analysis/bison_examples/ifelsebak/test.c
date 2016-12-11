@@ -1,8 +1,8 @@
-	if(A)
-		E
+	if(EA)
+		E;
 	else
-		if(C)
-			D
+		if(EA)
+			D;
 		else
-			B
+			B;
 	

@@ -77,21 +77,24 @@ Grammar
 
     0 $accept: selection_statement $end
 
-    1 statement: A
-    2          | B
-    3          | C
-    4          | D
-    5          | E
-    6          | selection_statement
+    1 expression: EA
 
-    7 selection_statement: IF '(' statement ')' statement ELSE statement
+    2 statement: A ';'
+    3          | B ';'
+    4          | C ';'
+    5          | D ';'
+    6          | E ';'
+    7          | selection_statement
+
+    8 selection_statement: IF '(' expression ')' statement ELSE statement
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 7
-')' (41) 7
+'(' (40) 8
+')' (41) 8
+';' (59) 2 3 4 5 6
 error (256)
 IDENTIFIER (258)
 I_CONSTANT (259)
@@ -149,8 +152,8 @@ ENUM (310)
 ELLIPSIS (311)
 CASE (312)
 DEFAULT (313)
-IF (314) 7
-ELSE (315) 7
+IF (314) 8
+ELSE (315) 8
 SWITCH (316)
 WHILE (317)
 DO (318)
@@ -166,21 +169,24 @@ GENERIC (327)
 NORETURN (328)
 STATIC_ASSERT (329)
 THREAD_LOCAL (330)
-A (331) 1
-B (332) 2
-C (333) 3
-D (334) 4
-E (335) 5
+A (331) 2
+B (332) 3
+C (333) 4
+D (334) 5
+E (335) 6
+EA (336) 1
 
 
 Nonterminals, with rules where they appear
 
-$accept (83)
+$accept (85)
     on left: 0
-statement (84)
-    on left: 1 2 3 4 5 6, on right: 7
-selection_statement (85)
-    on left: 7, on right: 0 6
+expression (86)
+    on left: 1, on right: 8
+statement (87)
+    on left: 2 3 4 5 6 7, on right: 8
+selection_statement (88)
+    on left: 8, on right: 0 7
 
 
 state 0
@@ -194,7 +200,7 @@ state 0
 
 state 1
 
-    7 selection_statement: IF . '(' statement ')' statement ELSE statement
+    8 selection_statement: IF . '(' expression ')' statement ELSE statement
 
     '('  shift, and go to state 3
 
@@ -208,17 +214,11 @@ state 2
 
 state 3
 
-    7 selection_statement: IF '(' . statement ')' statement ELSE statement
+    8 selection_statement: IF '(' . expression ')' statement ELSE statement
 
-    IF  shift, and go to state 1
-    A   shift, and go to state 5
-    B   shift, and go to state 6
-    C   shift, and go to state 7
-    D   shift, and go to state 8
-    E   shift, and go to state 9
+    EA  shift, and go to state 5
 
-    statement            go to state 10
-    selection_statement  go to state 11
+    expression  go to state 6
 
 
 state 4
@@ -230,92 +230,134 @@ state 4
 
 state 5
 
-    1 statement: A .
+    1 expression: EA .
 
-    $default  reduce using rule 1 (statement)
+    $default  reduce using rule 1 (expression)
 
 
 state 6
 
-    2 statement: B .
+    8 selection_statement: IF '(' expression . ')' statement ELSE statement
 
-    $default  reduce using rule 2 (statement)
+    ')'  shift, and go to state 7
 
 
 state 7
 
-    3 statement: C .
+    8 selection_statement: IF '(' expression ')' . statement ELSE statement
 
-    $default  reduce using rule 3 (statement)
+    IF  shift, and go to state 1
+    A   shift, and go to state 8
+    B   shift, and go to state 9
+    C   shift, and go to state 10
+    D   shift, and go to state 11
+    E   shift, and go to state 12
+
+    statement            go to state 13
+    selection_statement  go to state 14
 
 
 state 8
 
-    4 statement: D .
+    2 statement: A . ';'
 
-    $default  reduce using rule 4 (statement)
+    ';'  shift, and go to state 15
 
 
 state 9
 
-    5 statement: E .
+    3 statement: B . ';'
 
-    $default  reduce using rule 5 (statement)
+    ';'  shift, and go to state 16
 
 
 state 10
 
-    7 selection_statement: IF '(' statement . ')' statement ELSE statement
+    4 statement: C . ';'
 
-    ')'  shift, and go to state 12
+    ';'  shift, and go to state 17
 
 
 state 11
 
-    6 statement: selection_statement .
+    5 statement: D . ';'
 
-    $default  reduce using rule 6 (statement)
+    ';'  shift, and go to state 18
 
 
 state 12
 
-    7 selection_statement: IF '(' statement ')' . statement ELSE statement
+    6 statement: E . ';'
 
-    IF  shift, and go to state 1
-    A   shift, and go to state 5
-    B   shift, and go to state 6
-    C   shift, and go to state 7
-    D   shift, and go to state 8
-    E   shift, and go to state 9
-
-    statement            go to state 13
-    selection_statement  go to state 11
+    ';'  shift, and go to state 19
 
 
 state 13
 
-    7 selection_statement: IF '(' statement ')' statement . ELSE statement
+    8 selection_statement: IF '(' expression ')' statement . ELSE statement
 
-    ELSE  shift, and go to state 14
+    ELSE  shift, and go to state 20
 
 
 state 14
 
-    7 selection_statement: IF '(' statement ')' statement ELSE . statement
+    7 statement: selection_statement .
 
-    IF  shift, and go to state 1
-    A   shift, and go to state 5
-    B   shift, and go to state 6
-    C   shift, and go to state 7
-    D   shift, and go to state 8
-    E   shift, and go to state 9
-
-    statement            go to state 15
-    selection_statement  go to state 11
+    $default  reduce using rule 7 (statement)
 
 
 state 15
 
-    7 selection_statement: IF '(' statement ')' statement ELSE statement .
+    2 statement: A ';' .
 
-    $default  reduce using rule 7 (selection_statement)
+    $default  reduce using rule 2 (statement)
+
+
+state 16
+
+    3 statement: B ';' .
+
+    $default  reduce using rule 3 (statement)
+
+
+state 17
+
+    4 statement: C ';' .
+
+    $default  reduce using rule 4 (statement)
+
+
+state 18
+
+    5 statement: D ';' .
+
+    $default  reduce using rule 5 (statement)
+
+
+state 19
+
+    6 statement: E ';' .
+
+    $default  reduce using rule 6 (statement)
+
+
+state 20
+
+    8 selection_statement: IF '(' expression ')' statement ELSE . statement
+
+    IF  shift, and go to state 1
+    A   shift, and go to state 8
+    B   shift, and go to state 9
+    C   shift, and go to state 10
+    D   shift, and go to state 11
+    E   shift, and go to state 12
+
+    statement            go to state 21
+    selection_statement  go to state 14
+
+
+state 21
+
+    8 selection_statement: IF '(' expression ')' statement ELSE statement .
+
+    $default  reduce using rule 8 (selection_statement)

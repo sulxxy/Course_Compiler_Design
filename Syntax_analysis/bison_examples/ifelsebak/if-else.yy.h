@@ -116,7 +116,8 @@
      B = 332,
      C = 333,
      D = 334,
-     E = 335
+     E = 335,
+     EA = 336
    };
 #endif
 /* Tokens.  */
@@ -198,6 +199,7 @@
 #define C 333
 #define D 334
 #define E 335
+#define EA 336
 
 
 

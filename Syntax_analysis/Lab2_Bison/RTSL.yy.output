@@ -1,0 +1,2765 @@
+Terminals which are not used
+
+   STRING_LITERAL
+   FUNC_NAME
+   SIZEOF
+   LBRACKET
+   RBRACKET
+   PTR_OP
+   LEFT_OP
+   RIGHT_OP
+   AND
+   OR
+   SUB_ASSIGN
+   LEFT_ASSIGN
+   RIGHT_ASSIGN
+   AND_ASSIGN
+   RESTRICT
+   VOLATILE
+
+
+Rules never reduced
+
+  103 parameter_list: expression COMMA function_call
+
+
+State 0 conflicts: 1 shift/reduce
+State 4 conflicts: 1 shift/reduce
+State 26 conflicts: 1 shift/reduce
+State 32 conflicts: 1 shift/reduce
+State 34 conflicts: 1 shift/reduce
+State 48 conflicts: 1 shift/reduce
+State 55 conflicts: 1 shift/reduce
+State 74 conflicts: 3 shift/reduce
+State 99 conflicts: 1 shift/reduce
+State 101 conflicts: 2 shift/reduce
+State 119 conflicts: 18 shift/reduce
+State 129 conflicts: 1 shift/reduce
+State 130 conflicts: 1 shift/reduce
+State 142 conflicts: 1 reduce/reduce
+State 146 conflicts: 1 shift/reduce
+State 155 conflicts: 1 shift/reduce
+State 159 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: primary_statement $end
+
+    1 primary_statement: primary_statement statement
+    2                  | primary_statement shader_def
+    3                  | primary_statement function_definition
+    4                  | primary_statement declaration
+    5                  | shader_def
+    6                  | statement
+    7                  | function_definition
+    8                  | declaration
+
+    9 rt: PRIMITIVE
+   10   | CAMERA
+   11   | MATERIAL
+   12   | TEXTURE
+   13   | LIGHT
+
+   14 shader_def: CLASS IDENTIFIER COLON rt SEMICOLON
+
+   15 type_specifier: VOID
+   16               | CHAR
+   17               | SHORT
+   18               | INT
+   19               | LONG
+   20               | FLOAT
+   21               | DOUBLE
+   22               | SIGNED
+   23               | UNSIGNED
+   24               | BOOL
+   25               | VEC2
+   26               | VEC3
+   27               | VEC4
+   28               | BVEC2
+   29               | BVEC3
+   30               | BVEC4
+   31               | COLOR
+   32               | CLASS
+
+   33 operator: PLUS
+   34         | MINUS
+   35         | MUL
+   36         | DIV
+   37         | DEC
+   38         | INC
+   39         | ASSIGN
+   40         | PLUS_ASSIGN
+   41         | MINUS_ASSIGN
+   42         | DIV_ASSIGN
+   43         | MUL_ASSIGN
+   44         | MOD_ASSIGN
+   45         | EQUAL
+   46         | NOT_EQUAL
+   47         | LE
+   48         | LT
+   49         | GT
+   50         | GE
+
+   51 type_qualifier: CONST
+   52               | PUBLIC
+   53               | PRIVATE
+
+   54 specifier_qualifier_list: type_specifier specifier_qualifier_list
+   55                         | type_specifier
+   56                         | type_qualifier specifier_qualifier_list
+   57                         | type_qualifier
+
+   58 declaration: specifier_qualifier_list IDENTIFIER
+   59            | specifier_qualifier_list IDENTIFIER COMMA
+   60            | specifier_qualifier_list IDENTIFIER SEMICOLON
+
+   61 declaration_list: declaration
+   62                 | declaration_list declaration
+
+   63 declarator: IDENTIFIER LPARENTHESIS RPARENTHESIS
+   64           | IDENTIFIER LPARENTHESIS declaration_list RPARENTHESIS
+   65           | LPARENTHESIS declarator RPARENTHESIS
+   66           | declarator LPARENTHESIS RPARENTHESIS
+   67           | declarator LPARENTHESIS declaration_list RPARENTHESIS
+
+   68 expression: expression operator expression
+   69           | IDENTIFIER
+   70           | I_CONSTANT
+   71           | F_CONSTANT
+   72           | function_call
+   73           | LPARENTHESIS expression RPARENTHESIS
+   74           | /* empty */
+
+   75 statement: expression_statement
+   76          | assign_statement
+   77          | if_statement
+   78          | loop_statement
+   79          | return_statement
+   80          | compound_statement
+   81          | function_call_statement
+
+   82 expression_statement: SEMICOLON
+   83                     | expression SEMICOLON
+
+   84 assign_statement: specifier_qualifier_list IDENTIFIER ASSIGN expression SEMICOLON
+
+   85 if_statement: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement
+   86             | IF LPARENTHESIS expression RPARENTHESIS statement
+
+   87 loop_statement: WHILE LPARENTHESIS expression RPARENTHESIS statement
+   88               | FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON expression RPARENTHESIS statement
+
+   89 return_statement: RETURN expression SEMICOLON
+
+   90 compound_statement: LBRACE RBRACE
+   91                   | LBRACE block_statement RBRACE
+
+   92 block_statement: block_item
+   93                | block_statement block_item
+
+   94 block_item: declaration
+   95           | statement
+
+   96 function_definition: specifier_qualifier_list declarator compound_statement
+
+   97 function_call_statement: function_call SEMICOLON
+
+   98 function_call: type_specifier LPARENTHESIS parameter_list RPARENTHESIS
+   99              | IDENTIFIER LPARENTHESIS parameter_list RPARENTHESIS
+
+  100 parameter_list: expression
+  101               | expression COMMA expression
+  102               | function_call COMMA expression
+  103               | expression COMMA function_call
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+IDENTIFIER (258) 14 58 59 60 63 64 69 84 99
+I_CONSTANT (259) 70
+F_CONSTANT (260) 71
+STRING_LITERAL (261)
+FUNC_NAME (262)
+SIZEOF (263)
+LBRACE (264) 90 91
+RBRACE (265) 90 91
+LPARENTHESIS (266) 63 64 65 66 67 73 85 86 87 88 98 99
+RPARENTHESIS (267) 63 64 65 66 67 73 85 86 87 88 98 99
+LBRACKET (268)
+RBRACKET (269)
+COMMA (270) 59 101 102 103
+SEMICOLON (271) 14 60 82 83 84 88 89 97
+COLON (272) 14
+ASSIGN (273) 39 84
+LT (274) 48
+LE (275) 47
+GT (276) 49
+GE (277) 50
+EQUAL (278) 45
+NOT_EQUAL (279) 46
+PLUS (280) 33
+MINUS (281) 34
+MUL (282) 35
+DIV (283) 36
+PTR_OP (284)
+INC (285) 38
+DEC (286) 37
+LEFT_OP (287)
+RIGHT_OP (288)
+AND (289)
+OR (290)
+MUL_ASSIGN (291) 43
+DIV_ASSIGN (292) 42
+MOD_ASSIGN (293) 44
+PLUS_ASSIGN (294) 40
+MINUS_ASSIGN (295) 41
+SUB_ASSIGN (296)
+LEFT_ASSIGN (297)
+RIGHT_ASSIGN (298)
+AND_ASSIGN (299)
+CONST (300) 51
+RESTRICT (301)
+VOLATILE (302)
+PUBLIC (303) 52
+PRIVATE (304) 53
+BOOL (305) 24
+CHAR (306) 16
+SHORT (307) 17
+INT (308) 18
+LONG (309) 19
+SIGNED (310) 22
+UNSIGNED (311) 23
+FLOAT (312) 20
+DOUBLE (313) 21
+VOID (314) 15
+VEC2 (315) 25
+VEC3 (316) 26
+VEC4 (317) 27
+BVEC2 (318) 28
+BVEC3 (319) 29
+BVEC4 (320) 30
+CLASS (321) 14 32
+COLOR (322) 31
+IF (323) 85 86
+ELSE (324) 85
+RETURN (325) 89
+WHILE (326) 87
+FOR (327) 88
+PRIMITIVE (328) 9
+CAMERA (329) 10
+MATERIAL (330) 11
+TEXTURE (331) 12
+LIGHT (332) 13
+
+
+Nonterminals, with rules where they appear
+
+$accept (78)
+    on left: 0
+primary_statement (79)
+    on left: 1 2 3 4 5 6 7 8, on right: 0 1 2 3 4
+rt (80)
+    on left: 9 10 11 12 13, on right: 14
+shader_def (81)
+    on left: 14, on right: 2 5
+type_specifier (82)
+    on left: 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
+   , on right: 54 55 98
+operator (83)
+    on left: 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+   , on right: 68
+type_qualifier (84)
+    on left: 51 52 53, on right: 56 57
+specifier_qualifier_list (85)
+    on left: 54 55 56 57, on right: 54 56 58 59 60 84 96
+declaration (86)
+    on left: 58 59 60, on right: 4 8 61 62 94
+declaration_list (87)
+    on left: 61 62, on right: 62 64 67
+declarator (88)
+    on left: 63 64 65 66 67, on right: 65 66 67 96
+expression (89)
+    on left: 68 69 70 71 72 73 74, on right: 68 73 83 84 85 86 87 88
+    89 100 101 102 103
+statement (90)
+    on left: 75 76 77 78 79 80 81, on right: 1 6 85 86 87 88 95
+expression_statement (91)
+    on left: 82 83, on right: 75
+assign_statement (92)
+    on left: 84, on right: 76
+if_statement (93)
+    on left: 85 86, on right: 77
+loop_statement (94)
+    on left: 87 88, on right: 78
+return_statement (95)
+    on left: 89, on right: 79
+compound_statement (96)
+    on left: 90 91, on right: 80 96
+block_statement (97)
+    on left: 92 93, on right: 91 93
+block_item (98)
+    on left: 94 95, on right: 92 93
+function_definition (99)
+    on left: 96, on right: 3 7
+function_call_statement (100)
+    on left: 97, on right: 81
+function_call (101)
+    on left: 98 99, on right: 72 97 102 103
+parameter_list (102)
+    on left: 100 101 102 103, on right: 98 99
+
+
+state 0
+
+    0 $accept: . primary_statement $end
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 26
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    primary_statement         go to state 32
+    shader_def                go to state 33
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 36
+    declaration               go to state 37
+    expression                go to state 38
+    statement                 go to state 39
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    function_definition       go to state 46
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 1
+
+   69 expression: IDENTIFIER .
+   99 function_call: IDENTIFIER . LPARENTHESIS parameter_list RPARENTHESIS
+
+    LPARENTHESIS  shift, and go to state 49
+
+    $default  reduce using rule 69 (expression)
+
+
+state 2
+
+   70 expression: I_CONSTANT .
+
+    $default  reduce using rule 70 (expression)
+
+
+state 3
+
+   71 expression: F_CONSTANT .
+
+    $default  reduce using rule 71 (expression)
+
+
+state 4
+
+   90 compound_statement: LBRACE . RBRACE
+   91                   | LBRACE . block_statement RBRACE
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    RBRACE        shift, and go to state 50
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 52
+    declaration               go to state 53
+    expression                go to state 38
+    statement                 go to state 54
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    block_statement           go to state 55
+    block_item                go to state 56
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 5
+
+   73 expression: LPARENTHESIS . expression RPARENTHESIS
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 58
+    function_call   go to state 59
+
+
+state 6
+
+   82 expression_statement: SEMICOLON .
+
+    $default  reduce using rule 82 (expression_statement)
+
+
+state 7
+
+   51 type_qualifier: CONST .
+
+    $default  reduce using rule 51 (type_qualifier)
+
+
+state 8
+
+   52 type_qualifier: PUBLIC .
+
+    $default  reduce using rule 52 (type_qualifier)
+
+
+state 9
+
+   53 type_qualifier: PRIVATE .
+
+    $default  reduce using rule 53 (type_qualifier)
+
+
+state 10
+
+   24 type_specifier: BOOL .
+
+    $default  reduce using rule 24 (type_specifier)
+
+
+state 11
+
+   16 type_specifier: CHAR .
+
+    $default  reduce using rule 16 (type_specifier)
+
+
+state 12
+
+   17 type_specifier: SHORT .
+
+    $default  reduce using rule 17 (type_specifier)
+
+
+state 13
+
+   18 type_specifier: INT .
+
+    $default  reduce using rule 18 (type_specifier)
+
+
+state 14
+
+   19 type_specifier: LONG .
+
+    $default  reduce using rule 19 (type_specifier)
+
+
+state 15
+
+   22 type_specifier: SIGNED .
+
+    $default  reduce using rule 22 (type_specifier)
+
+
+state 16
+
+   23 type_specifier: UNSIGNED .
+
+    $default  reduce using rule 23 (type_specifier)
+
+
+state 17
+
+   20 type_specifier: FLOAT .
+
+    $default  reduce using rule 20 (type_specifier)
+
+
+state 18
+
+   21 type_specifier: DOUBLE .
+
+    $default  reduce using rule 21 (type_specifier)
+
+
+state 19
+
+   15 type_specifier: VOID .
+
+    $default  reduce using rule 15 (type_specifier)
+
+
+state 20
+
+   25 type_specifier: VEC2 .
+
+    $default  reduce using rule 25 (type_specifier)
+
+
+state 21
+
+   26 type_specifier: VEC3 .
+
+    $default  reduce using rule 26 (type_specifier)
+
+
+state 22
+
+   27 type_specifier: VEC4 .
+
+    $default  reduce using rule 27 (type_specifier)
+
+
+state 23
+
+   28 type_specifier: BVEC2 .
+
+    $default  reduce using rule 28 (type_specifier)
+
+
+state 24
+
+   29 type_specifier: BVEC3 .
+
+    $default  reduce using rule 29 (type_specifier)
+
+
+state 25
+
+   30 type_specifier: BVEC4 .
+
+    $default  reduce using rule 30 (type_specifier)
+
+
+state 26
+
+   14 shader_def: CLASS . IDENTIFIER COLON rt SEMICOLON
+   32 type_specifier: CLASS .
+
+    IDENTIFIER  shift, and go to state 60
+
+    IDENTIFIER  [reduce using rule 32 (type_specifier)]
+    $default    reduce using rule 32 (type_specifier)
+
+
+state 27
+
+   31 type_specifier: COLOR .
+
+    $default  reduce using rule 31 (type_specifier)
+
+
+state 28
+
+   85 if_statement: IF . LPARENTHESIS expression RPARENTHESIS statement ELSE statement
+   86             | IF . LPARENTHESIS expression RPARENTHESIS statement
+
+    LPARENTHESIS  shift, and go to state 61
+
+
+state 29
+
+   89 return_statement: RETURN . expression SEMICOLON
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 62
+    function_call   go to state 59
+
+
+state 30
+
+   87 loop_statement: WHILE . LPARENTHESIS expression RPARENTHESIS statement
+
+    LPARENTHESIS  shift, and go to state 63
+
+
+state 31
+
+   88 loop_statement: FOR . LPARENTHESIS expression SEMICOLON expression SEMICOLON expression RPARENTHESIS statement
+
+    LPARENTHESIS  shift, and go to state 64
+
+
+state 32
+
+    0 $accept: primary_statement . $end
+    1 primary_statement: primary_statement . statement
+    2                  | primary_statement . shader_def
+    3                  | primary_statement . function_definition
+    4                  | primary_statement . declaration
+
+    $end          shift, and go to state 65
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 26
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    shader_def                go to state 66
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 36
+    declaration               go to state 67
+    expression                go to state 38
+    statement                 go to state 68
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    function_definition       go to state 69
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 33
+
+    5 primary_statement: shader_def .
+
+    $default  reduce using rule 5 (primary_statement)
+
+
+state 34
+
+   54 specifier_qualifier_list: type_specifier . specifier_qualifier_list
+   55                         | type_specifier .
+   98 function_call: type_specifier . LPARENTHESIS parameter_list RPARENTHESIS
+
+    LPARENTHESIS  shift, and go to state 70
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    LPARENTHESIS  [reduce using rule 55 (specifier_qualifier_list)]
+    $default      reduce using rule 55 (specifier_qualifier_list)
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 72
+
+
+state 35
+
+   56 specifier_qualifier_list: type_qualifier . specifier_qualifier_list
+   57                         | type_qualifier .
+
+    CONST     shift, and go to state 7
+    PUBLIC    shift, and go to state 8
+    PRIVATE   shift, and go to state 9
+    BOOL      shift, and go to state 10
+    CHAR      shift, and go to state 11
+    SHORT     shift, and go to state 12
+    INT       shift, and go to state 13
+    LONG      shift, and go to state 14
+    SIGNED    shift, and go to state 15
+    UNSIGNED  shift, and go to state 16
+    FLOAT     shift, and go to state 17
+    DOUBLE    shift, and go to state 18
+    VOID      shift, and go to state 19
+    VEC2      shift, and go to state 20
+    VEC3      shift, and go to state 21
+    VEC4      shift, and go to state 22
+    BVEC2     shift, and go to state 23
+    BVEC3     shift, and go to state 24
+    BVEC4     shift, and go to state 25
+    CLASS     shift, and go to state 51
+    COLOR     shift, and go to state 27
+
+    $default  reduce using rule 57 (specifier_qualifier_list)
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 73
+
+
+state 36
+
+   58 declaration: specifier_qualifier_list . IDENTIFIER
+   59            | specifier_qualifier_list . IDENTIFIER COMMA
+   60            | specifier_qualifier_list . IDENTIFIER SEMICOLON
+   84 assign_statement: specifier_qualifier_list . IDENTIFIER ASSIGN expression SEMICOLON
+   96 function_definition: specifier_qualifier_list . declarator compound_statement
+
+    IDENTIFIER    shift, and go to state 74
+    LPARENTHESIS  shift, and go to state 75
+
+    declarator  go to state 76
+
+
+state 37
+
+    8 primary_statement: declaration .
+
+    $default  reduce using rule 8 (primary_statement)
+
+
+state 38
+
+   68 expression: expression . operator expression
+   83 expression_statement: expression . SEMICOLON
+
+    SEMICOLON     shift, and go to state 77
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 39
+
+    6 primary_statement: statement .
+
+    $default  reduce using rule 6 (primary_statement)
+
+
+state 40
+
+   75 statement: expression_statement .
+
+    $default  reduce using rule 75 (statement)
+
+
+state 41
+
+   76 statement: assign_statement .
+
+    $default  reduce using rule 76 (statement)
+
+
+state 42
+
+   77 statement: if_statement .
+
+    $default  reduce using rule 77 (statement)
+
+
+state 43
+
+   78 statement: loop_statement .
+
+    $default  reduce using rule 78 (statement)
+
+
+state 44
+
+   79 statement: return_statement .
+
+    $default  reduce using rule 79 (statement)
+
+
+state 45
+
+   80 statement: compound_statement .
+
+    $default  reduce using rule 80 (statement)
+
+
+state 46
+
+    7 primary_statement: function_definition .
+
+    $default  reduce using rule 7 (primary_statement)
+
+
+state 47
+
+   81 statement: function_call_statement .
+
+    $default  reduce using rule 81 (statement)
+
+
+state 48
+
+   72 expression: function_call .
+   97 function_call_statement: function_call . SEMICOLON
+
+    SEMICOLON  shift, and go to state 97
+
+    SEMICOLON  [reduce using rule 72 (expression)]
+    $default   reduce using rule 72 (expression)
+
+
+state 49
+
+   99 function_call: IDENTIFIER LPARENTHESIS . parameter_list RPARENTHESIS
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 98
+    function_call   go to state 99
+    parameter_list  go to state 100
+
+
+state 50
+
+   90 compound_statement: LBRACE RBRACE .
+
+    $default  reduce using rule 90 (compound_statement)
+
+
+state 51
+
+   32 type_specifier: CLASS .
+
+    $default  reduce using rule 32 (type_specifier)
+
+
+state 52
+
+   58 declaration: specifier_qualifier_list . IDENTIFIER
+   59            | specifier_qualifier_list . IDENTIFIER COMMA
+   60            | specifier_qualifier_list . IDENTIFIER SEMICOLON
+   84 assign_statement: specifier_qualifier_list . IDENTIFIER ASSIGN expression SEMICOLON
+
+    IDENTIFIER  shift, and go to state 101
+
+
+state 53
+
+   94 block_item: declaration .
+
+    $default  reduce using rule 94 (block_item)
+
+
+state 54
+
+   95 block_item: statement .
+
+    $default  reduce using rule 95 (block_item)
+
+
+state 55
+
+   91 compound_statement: LBRACE block_statement . RBRACE
+   93 block_statement: block_statement . block_item
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    RBRACE        shift, and go to state 102
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 52
+    declaration               go to state 53
+    expression                go to state 38
+    statement                 go to state 54
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    block_item                go to state 103
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 56
+
+   92 block_statement: block_item .
+
+    $default  reduce using rule 92 (block_statement)
+
+
+state 57
+
+   98 function_call: type_specifier . LPARENTHESIS parameter_list RPARENTHESIS
+
+    LPARENTHESIS  shift, and go to state 70
+
+
+state 58
+
+   68 expression: expression . operator expression
+   73           | LPARENTHESIS expression . RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 104
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 59
+
+   72 expression: function_call .
+
+    $default  reduce using rule 72 (expression)
+
+
+state 60
+
+   14 shader_def: CLASS IDENTIFIER . COLON rt SEMICOLON
+
+    COLON  shift, and go to state 105
+
+
+state 61
+
+   85 if_statement: IF LPARENTHESIS . expression RPARENTHESIS statement ELSE statement
+   86             | IF LPARENTHESIS . expression RPARENTHESIS statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 106
+    function_call   go to state 59
+
+
+state 62
+
+   68 expression: expression . operator expression
+   89 return_statement: RETURN expression . SEMICOLON
+
+    SEMICOLON     shift, and go to state 107
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 63
+
+   87 loop_statement: WHILE LPARENTHESIS . expression RPARENTHESIS statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 108
+    function_call   go to state 59
+
+
+state 64
+
+   88 loop_statement: FOR LPARENTHESIS . expression SEMICOLON expression SEMICOLON expression RPARENTHESIS statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 109
+    function_call   go to state 59
+
+
+state 65
+
+    0 $accept: primary_statement $end .
+
+    $default  accept
+
+
+state 66
+
+    2 primary_statement: primary_statement shader_def .
+
+    $default  reduce using rule 2 (primary_statement)
+
+
+state 67
+
+    4 primary_statement: primary_statement declaration .
+
+    $default  reduce using rule 4 (primary_statement)
+
+
+state 68
+
+    1 primary_statement: primary_statement statement .
+
+    $default  reduce using rule 1 (primary_statement)
+
+
+state 69
+
+    3 primary_statement: primary_statement function_definition .
+
+    $default  reduce using rule 3 (primary_statement)
+
+
+state 70
+
+   98 function_call: type_specifier LPARENTHESIS . parameter_list RPARENTHESIS
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 98
+    function_call   go to state 99
+    parameter_list  go to state 110
+
+
+state 71
+
+   54 specifier_qualifier_list: type_specifier . specifier_qualifier_list
+   55                         | type_specifier .
+
+    CONST     shift, and go to state 7
+    PUBLIC    shift, and go to state 8
+    PRIVATE   shift, and go to state 9
+    BOOL      shift, and go to state 10
+    CHAR      shift, and go to state 11
+    SHORT     shift, and go to state 12
+    INT       shift, and go to state 13
+    LONG      shift, and go to state 14
+    SIGNED    shift, and go to state 15
+    UNSIGNED  shift, and go to state 16
+    FLOAT     shift, and go to state 17
+    DOUBLE    shift, and go to state 18
+    VOID      shift, and go to state 19
+    VEC2      shift, and go to state 20
+    VEC3      shift, and go to state 21
+    VEC4      shift, and go to state 22
+    BVEC2     shift, and go to state 23
+    BVEC3     shift, and go to state 24
+    BVEC4     shift, and go to state 25
+    CLASS     shift, and go to state 51
+    COLOR     shift, and go to state 27
+
+    $default  reduce using rule 55 (specifier_qualifier_list)
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 72
+
+
+state 72
+
+   54 specifier_qualifier_list: type_specifier specifier_qualifier_list .
+
+    $default  reduce using rule 54 (specifier_qualifier_list)
+
+
+state 73
+
+   56 specifier_qualifier_list: type_qualifier specifier_qualifier_list .
+
+    $default  reduce using rule 56 (specifier_qualifier_list)
+
+
+state 74
+
+   58 declaration: specifier_qualifier_list IDENTIFIER .
+   59            | specifier_qualifier_list IDENTIFIER . COMMA
+   60            | specifier_qualifier_list IDENTIFIER . SEMICOLON
+   63 declarator: IDENTIFIER . LPARENTHESIS RPARENTHESIS
+   64           | IDENTIFIER . LPARENTHESIS declaration_list RPARENTHESIS
+   84 assign_statement: specifier_qualifier_list IDENTIFIER . ASSIGN expression SEMICOLON
+
+    LPARENTHESIS  shift, and go to state 111
+    COMMA         shift, and go to state 112
+    SEMICOLON     shift, and go to state 113
+    ASSIGN        shift, and go to state 114
+
+    LPARENTHESIS  [reduce using rule 58 (declaration)]
+    SEMICOLON     [reduce using rule 58 (declaration)]
+    ASSIGN        [reduce using rule 58 (declaration)]
+    $default      reduce using rule 58 (declaration)
+
+
+state 75
+
+   65 declarator: LPARENTHESIS . declarator RPARENTHESIS
+
+    IDENTIFIER    shift, and go to state 115
+    LPARENTHESIS  shift, and go to state 75
+
+    declarator  go to state 116
+
+
+state 76
+
+   66 declarator: declarator . LPARENTHESIS RPARENTHESIS
+   67           | declarator . LPARENTHESIS declaration_list RPARENTHESIS
+   96 function_definition: specifier_qualifier_list declarator . compound_statement
+
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 117
+
+    compound_statement  go to state 118
+
+
+state 77
+
+   83 expression_statement: expression SEMICOLON .
+
+    $default  reduce using rule 83 (expression_statement)
+
+
+state 78
+
+   39 operator: ASSIGN .
+
+    $default  reduce using rule 39 (operator)
+
+
+state 79
+
+   48 operator: LT .
+
+    $default  reduce using rule 48 (operator)
+
+
+state 80
+
+   47 operator: LE .
+
+    $default  reduce using rule 47 (operator)
+
+
+state 81
+
+   49 operator: GT .
+
+    $default  reduce using rule 49 (operator)
+
+
+state 82
+
+   50 operator: GE .
+
+    $default  reduce using rule 50 (operator)
+
+
+state 83
+
+   45 operator: EQUAL .
+
+    $default  reduce using rule 45 (operator)
+
+
+state 84
+
+   46 operator: NOT_EQUAL .
+
+    $default  reduce using rule 46 (operator)
+
+
+state 85
+
+   33 operator: PLUS .
+
+    $default  reduce using rule 33 (operator)
+
+
+state 86
+
+   34 operator: MINUS .
+
+    $default  reduce using rule 34 (operator)
+
+
+state 87
+
+   35 operator: MUL .
+
+    $default  reduce using rule 35 (operator)
+
+
+state 88
+
+   36 operator: DIV .
+
+    $default  reduce using rule 36 (operator)
+
+
+state 89
+
+   38 operator: INC .
+
+    $default  reduce using rule 38 (operator)
+
+
+state 90
+
+   37 operator: DEC .
+
+    $default  reduce using rule 37 (operator)
+
+
+state 91
+
+   43 operator: MUL_ASSIGN .
+
+    $default  reduce using rule 43 (operator)
+
+
+state 92
+
+   42 operator: DIV_ASSIGN .
+
+    $default  reduce using rule 42 (operator)
+
+
+state 93
+
+   44 operator: MOD_ASSIGN .
+
+    $default  reduce using rule 44 (operator)
+
+
+state 94
+
+   40 operator: PLUS_ASSIGN .
+
+    $default  reduce using rule 40 (operator)
+
+
+state 95
+
+   41 operator: MINUS_ASSIGN .
+
+    $default  reduce using rule 41 (operator)
+
+
+state 96
+
+   68 expression: expression operator . expression
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 119
+    function_call   go to state 59
+
+
+state 97
+
+   97 function_call_statement: function_call SEMICOLON .
+
+    $default  reduce using rule 97 (function_call_statement)
+
+
+state 98
+
+   68 expression: expression . operator expression
+  100 parameter_list: expression .
+  101               | expression . COMMA expression
+  103               | expression . COMMA function_call
+
+    COMMA         shift, and go to state 120
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    $default  reduce using rule 100 (parameter_list)
+
+    operator  go to state 96
+
+
+state 99
+
+   72 expression: function_call .
+  102 parameter_list: function_call . COMMA expression
+
+    COMMA  shift, and go to state 121
+
+    COMMA     [reduce using rule 72 (expression)]
+    $default  reduce using rule 72 (expression)
+
+
+state 100
+
+   99 function_call: IDENTIFIER LPARENTHESIS parameter_list . RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 122
+
+
+state 101
+
+   58 declaration: specifier_qualifier_list IDENTIFIER .
+   59            | specifier_qualifier_list IDENTIFIER . COMMA
+   60            | specifier_qualifier_list IDENTIFIER . SEMICOLON
+   84 assign_statement: specifier_qualifier_list IDENTIFIER . ASSIGN expression SEMICOLON
+
+    COMMA      shift, and go to state 112
+    SEMICOLON  shift, and go to state 113
+    ASSIGN     shift, and go to state 114
+
+    SEMICOLON  [reduce using rule 58 (declaration)]
+    ASSIGN     [reduce using rule 58 (declaration)]
+    $default   reduce using rule 58 (declaration)
+
+
+state 102
+
+   91 compound_statement: LBRACE block_statement RBRACE .
+
+    $default  reduce using rule 91 (compound_statement)
+
+
+state 103
+
+   93 block_statement: block_statement block_item .
+
+    $default  reduce using rule 93 (block_statement)
+
+
+state 104
+
+   73 expression: LPARENTHESIS expression RPARENTHESIS .
+
+    $default  reduce using rule 73 (expression)
+
+
+state 105
+
+   14 shader_def: CLASS IDENTIFIER COLON . rt SEMICOLON
+
+    PRIMITIVE  shift, and go to state 123
+    CAMERA     shift, and go to state 124
+    MATERIAL   shift, and go to state 125
+    TEXTURE    shift, and go to state 126
+    LIGHT      shift, and go to state 127
+
+    rt  go to state 128
+
+
+state 106
+
+   68 expression: expression . operator expression
+   85 if_statement: IF LPARENTHESIS expression . RPARENTHESIS statement ELSE statement
+   86             | IF LPARENTHESIS expression . RPARENTHESIS statement
+
+    RPARENTHESIS  shift, and go to state 129
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 107
+
+   89 return_statement: RETURN expression SEMICOLON .
+
+    $default  reduce using rule 89 (return_statement)
+
+
+state 108
+
+   68 expression: expression . operator expression
+   87 loop_statement: WHILE LPARENTHESIS expression . RPARENTHESIS statement
+
+    RPARENTHESIS  shift, and go to state 130
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 109
+
+   68 expression: expression . operator expression
+   88 loop_statement: FOR LPARENTHESIS expression . SEMICOLON expression SEMICOLON expression RPARENTHESIS statement
+
+    SEMICOLON     shift, and go to state 131
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 110
+
+   98 function_call: type_specifier LPARENTHESIS parameter_list . RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 132
+
+
+state 111
+
+   63 declarator: IDENTIFIER LPARENTHESIS . RPARENTHESIS
+   64           | IDENTIFIER LPARENTHESIS . declaration_list RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 133
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 134
+    declaration               go to state 135
+    declaration_list          go to state 136
+
+
+state 112
+
+   59 declaration: specifier_qualifier_list IDENTIFIER COMMA .
+
+    $default  reduce using rule 59 (declaration)
+
+
+state 113
+
+   60 declaration: specifier_qualifier_list IDENTIFIER SEMICOLON .
+
+    $default  reduce using rule 60 (declaration)
+
+
+state 114
+
+   84 assign_statement: specifier_qualifier_list IDENTIFIER ASSIGN . expression SEMICOLON
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 137
+    function_call   go to state 59
+
+
+state 115
+
+   63 declarator: IDENTIFIER . LPARENTHESIS RPARENTHESIS
+   64           | IDENTIFIER . LPARENTHESIS declaration_list RPARENTHESIS
+
+    LPARENTHESIS  shift, and go to state 111
+
+
+state 116
+
+   65 declarator: LPARENTHESIS declarator . RPARENTHESIS
+   66           | declarator . LPARENTHESIS RPARENTHESIS
+   67           | declarator . LPARENTHESIS declaration_list RPARENTHESIS
+
+    LPARENTHESIS  shift, and go to state 117
+    RPARENTHESIS  shift, and go to state 138
+
+
+state 117
+
+   66 declarator: declarator LPARENTHESIS . RPARENTHESIS
+   67           | declarator LPARENTHESIS . declaration_list RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 139
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 134
+    declaration               go to state 135
+    declaration_list          go to state 140
+
+
+state 118
+
+   96 function_definition: specifier_qualifier_list declarator compound_statement .
+
+    $default  reduce using rule 96 (function_definition)
+
+
+state 119
+
+   68 expression: expression . operator expression
+   68           | expression operator expression .
+
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    ASSIGN        [reduce using rule 68 (expression)]
+    LT            [reduce using rule 68 (expression)]
+    LE            [reduce using rule 68 (expression)]
+    GT            [reduce using rule 68 (expression)]
+    GE            [reduce using rule 68 (expression)]
+    EQUAL         [reduce using rule 68 (expression)]
+    NOT_EQUAL     [reduce using rule 68 (expression)]
+    PLUS          [reduce using rule 68 (expression)]
+    MINUS         [reduce using rule 68 (expression)]
+    MUL           [reduce using rule 68 (expression)]
+    DIV           [reduce using rule 68 (expression)]
+    INC           [reduce using rule 68 (expression)]
+    DEC           [reduce using rule 68 (expression)]
+    MUL_ASSIGN    [reduce using rule 68 (expression)]
+    DIV_ASSIGN    [reduce using rule 68 (expression)]
+    MOD_ASSIGN    [reduce using rule 68 (expression)]
+    PLUS_ASSIGN   [reduce using rule 68 (expression)]
+    MINUS_ASSIGN  [reduce using rule 68 (expression)]
+    $default      reduce using rule 68 (expression)
+
+    operator  go to state 96
+
+
+state 120
+
+  101 parameter_list: expression COMMA . expression
+  103               | expression COMMA . function_call
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 141
+    function_call   go to state 142
+
+
+state 121
+
+  102 parameter_list: function_call COMMA . expression
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 143
+    function_call   go to state 59
+
+
+state 122
+
+   99 function_call: IDENTIFIER LPARENTHESIS parameter_list RPARENTHESIS .
+
+    $default  reduce using rule 99 (function_call)
+
+
+state 123
+
+    9 rt: PRIMITIVE .
+
+    $default  reduce using rule 9 (rt)
+
+
+state 124
+
+   10 rt: CAMERA .
+
+    $default  reduce using rule 10 (rt)
+
+
+state 125
+
+   11 rt: MATERIAL .
+
+    $default  reduce using rule 11 (rt)
+
+
+state 126
+
+   12 rt: TEXTURE .
+
+    $default  reduce using rule 12 (rt)
+
+
+state 127
+
+   13 rt: LIGHT .
+
+    $default  reduce using rule 13 (rt)
+
+
+state 128
+
+   14 shader_def: CLASS IDENTIFIER COLON rt . SEMICOLON
+
+    SEMICOLON  shift, and go to state 144
+
+
+state 129
+
+   85 if_statement: IF LPARENTHESIS expression RPARENTHESIS . statement ELSE statement
+   86             | IF LPARENTHESIS expression RPARENTHESIS . statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 145
+    expression                go to state 38
+    statement                 go to state 146
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 130
+
+   87 loop_statement: WHILE LPARENTHESIS expression RPARENTHESIS . statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 145
+    expression                go to state 38
+    statement                 go to state 147
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 131
+
+   88 loop_statement: FOR LPARENTHESIS expression SEMICOLON . expression SEMICOLON expression RPARENTHESIS statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 148
+    function_call   go to state 59
+
+
+state 132
+
+   98 function_call: type_specifier LPARENTHESIS parameter_list RPARENTHESIS .
+
+    $default  reduce using rule 98 (function_call)
+
+
+state 133
+
+   63 declarator: IDENTIFIER LPARENTHESIS RPARENTHESIS .
+
+    $default  reduce using rule 63 (declarator)
+
+
+state 134
+
+   58 declaration: specifier_qualifier_list . IDENTIFIER
+   59            | specifier_qualifier_list . IDENTIFIER COMMA
+   60            | specifier_qualifier_list . IDENTIFIER SEMICOLON
+
+    IDENTIFIER  shift, and go to state 149
+
+
+state 135
+
+   61 declaration_list: declaration .
+
+    $default  reduce using rule 61 (declaration_list)
+
+
+state 136
+
+   62 declaration_list: declaration_list . declaration
+   64 declarator: IDENTIFIER LPARENTHESIS declaration_list . RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 150
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 134
+    declaration               go to state 151
+
+
+state 137
+
+   68 expression: expression . operator expression
+   84 assign_statement: specifier_qualifier_list IDENTIFIER ASSIGN expression . SEMICOLON
+
+    SEMICOLON     shift, and go to state 152
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 138
+
+   65 declarator: LPARENTHESIS declarator RPARENTHESIS .
+
+    $default  reduce using rule 65 (declarator)
+
+
+state 139
+
+   66 declarator: declarator LPARENTHESIS RPARENTHESIS .
+
+    $default  reduce using rule 66 (declarator)
+
+
+state 140
+
+   62 declaration_list: declaration_list . declaration
+   67 declarator: declarator LPARENTHESIS declaration_list . RPARENTHESIS
+
+    RPARENTHESIS  shift, and go to state 153
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    type_specifier            go to state 71
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 134
+    declaration               go to state 151
+
+
+state 141
+
+   68 expression: expression . operator expression
+  101 parameter_list: expression COMMA expression .
+
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    $default  reduce using rule 101 (parameter_list)
+
+    operator  go to state 96
+
+
+state 142
+
+   72 expression: function_call .
+  103 parameter_list: expression COMMA function_call .
+
+    RPARENTHESIS  reduce using rule 72 (expression)
+    RPARENTHESIS  [reduce using rule 103 (parameter_list)]
+    $default      reduce using rule 72 (expression)
+
+
+state 143
+
+   68 expression: expression . operator expression
+  102 parameter_list: function_call COMMA expression .
+
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    $default  reduce using rule 102 (parameter_list)
+
+    operator  go to state 96
+
+
+state 144
+
+   14 shader_def: CLASS IDENTIFIER COLON rt SEMICOLON .
+
+    $default  reduce using rule 14 (shader_def)
+
+
+state 145
+
+   84 assign_statement: specifier_qualifier_list . IDENTIFIER ASSIGN expression SEMICOLON
+
+    IDENTIFIER  shift, and go to state 154
+
+
+state 146
+
+   85 if_statement: IF LPARENTHESIS expression RPARENTHESIS statement . ELSE statement
+   86             | IF LPARENTHESIS expression RPARENTHESIS statement .
+
+    ELSE  shift, and go to state 155
+
+    ELSE      [reduce using rule 86 (if_statement)]
+    $default  reduce using rule 86 (if_statement)
+
+
+state 147
+
+   87 loop_statement: WHILE LPARENTHESIS expression RPARENTHESIS statement .
+
+    $default  reduce using rule 87 (loop_statement)
+
+
+state 148
+
+   68 expression: expression . operator expression
+   88 loop_statement: FOR LPARENTHESIS expression SEMICOLON expression . SEMICOLON expression RPARENTHESIS statement
+
+    SEMICOLON     shift, and go to state 156
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 149
+
+   58 declaration: specifier_qualifier_list IDENTIFIER .
+   59            | specifier_qualifier_list IDENTIFIER . COMMA
+   60            | specifier_qualifier_list IDENTIFIER . SEMICOLON
+
+    COMMA      shift, and go to state 112
+    SEMICOLON  shift, and go to state 113
+
+    $default  reduce using rule 58 (declaration)
+
+
+state 150
+
+   64 declarator: IDENTIFIER LPARENTHESIS declaration_list RPARENTHESIS .
+
+    $default  reduce using rule 64 (declarator)
+
+
+state 151
+
+   62 declaration_list: declaration_list declaration .
+
+    $default  reduce using rule 62 (declaration_list)
+
+
+state 152
+
+   84 assign_statement: specifier_qualifier_list IDENTIFIER ASSIGN expression SEMICOLON .
+
+    $default  reduce using rule 84 (assign_statement)
+
+
+state 153
+
+   67 declarator: declarator LPARENTHESIS declaration_list RPARENTHESIS .
+
+    $default  reduce using rule 67 (declarator)
+
+
+state 154
+
+   84 assign_statement: specifier_qualifier_list IDENTIFIER . ASSIGN expression SEMICOLON
+
+    ASSIGN  shift, and go to state 114
+
+
+state 155
+
+   85 if_statement: IF LPARENTHESIS expression RPARENTHESIS statement ELSE . statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 145
+    expression                go to state 38
+    statement                 go to state 157
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 156
+
+   88 loop_statement: FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON . expression RPARENTHESIS statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LPARENTHESIS  shift, and go to state 5
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+
+    $default  reduce using rule 74 (expression)
+
+    type_specifier  go to state 57
+    expression      go to state 158
+    function_call   go to state 59
+
+
+state 157
+
+   85 if_statement: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement .
+
+    $default  reduce using rule 85 (if_statement)
+
+
+state 158
+
+   68 expression: expression . operator expression
+   88 loop_statement: FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON expression . RPARENTHESIS statement
+
+    RPARENTHESIS  shift, and go to state 159
+    ASSIGN        shift, and go to state 78
+    LT            shift, and go to state 79
+    LE            shift, and go to state 80
+    GT            shift, and go to state 81
+    GE            shift, and go to state 82
+    EQUAL         shift, and go to state 83
+    NOT_EQUAL     shift, and go to state 84
+    PLUS          shift, and go to state 85
+    MINUS         shift, and go to state 86
+    MUL           shift, and go to state 87
+    DIV           shift, and go to state 88
+    INC           shift, and go to state 89
+    DEC           shift, and go to state 90
+    MUL_ASSIGN    shift, and go to state 91
+    DIV_ASSIGN    shift, and go to state 92
+    MOD_ASSIGN    shift, and go to state 93
+    PLUS_ASSIGN   shift, and go to state 94
+    MINUS_ASSIGN  shift, and go to state 95
+
+    operator  go to state 96
+
+
+state 159
+
+   88 loop_statement: FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON expression RPARENTHESIS . statement
+
+    IDENTIFIER    shift, and go to state 1
+    I_CONSTANT    shift, and go to state 2
+    F_CONSTANT    shift, and go to state 3
+    LBRACE        shift, and go to state 4
+    LPARENTHESIS  shift, and go to state 5
+    SEMICOLON     shift, and go to state 6
+    CONST         shift, and go to state 7
+    PUBLIC        shift, and go to state 8
+    PRIVATE       shift, and go to state 9
+    BOOL          shift, and go to state 10
+    CHAR          shift, and go to state 11
+    SHORT         shift, and go to state 12
+    INT           shift, and go to state 13
+    LONG          shift, and go to state 14
+    SIGNED        shift, and go to state 15
+    UNSIGNED      shift, and go to state 16
+    FLOAT         shift, and go to state 17
+    DOUBLE        shift, and go to state 18
+    VOID          shift, and go to state 19
+    VEC2          shift, and go to state 20
+    VEC3          shift, and go to state 21
+    VEC4          shift, and go to state 22
+    BVEC2         shift, and go to state 23
+    BVEC3         shift, and go to state 24
+    BVEC4         shift, and go to state 25
+    CLASS         shift, and go to state 51
+    COLOR         shift, and go to state 27
+    IF            shift, and go to state 28
+    RETURN        shift, and go to state 29
+    WHILE         shift, and go to state 30
+    FOR           shift, and go to state 31
+
+    SEMICOLON  [reduce using rule 74 (expression)]
+    $default   reduce using rule 74 (expression)
+
+    type_specifier            go to state 34
+    type_qualifier            go to state 35
+    specifier_qualifier_list  go to state 145
+    expression                go to state 38
+    statement                 go to state 160
+    expression_statement      go to state 40
+    assign_statement          go to state 41
+    if_statement              go to state 42
+    loop_statement            go to state 43
+    return_statement          go to state 44
+    compound_statement        go to state 45
+    function_call_statement   go to state 47
+    function_call             go to state 48
+
+
+state 160
+
+   88 loop_statement: FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON expression RPARENTHESIS statement .
+
+    $default  reduce using rule 88 (loop_statement)

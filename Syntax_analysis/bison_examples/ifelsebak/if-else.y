@@ -21,21 +21,23 @@ void yyerror(const char *s);
 
 %token	ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
 
-%token A B C D E
+%token A B C D E EA
 %start selection_statement
 %%
 
+expression
+	: EA {printf("EA\n");}
 statement
-	: A {printf("A\n");}
-	| B {printf("B\n");}
-	| C {printf("C\n");}
-	| D {printf("D\n");}
-	| E {printf("E\n");}
+	: A';' {printf("A\n");}
+	| B';' {printf("B\n");}
+	| C';' {printf("C\n");}
+	| D';' {printf("D\n");}
+	| E';' {printf("E\n");}
 	| selection_statement
 	;
 
 selection_statement
-	: IF '(' statement ')' statement ELSE statement {printf("IF-ELSE\n"); }
+	: IF '(' expression ')' statement ELSE statement {printf("IF-ELSE\n"); }
 	;
 
 %%
