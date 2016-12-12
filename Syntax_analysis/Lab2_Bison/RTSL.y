@@ -171,8 +171,8 @@ return_statement
 	;
 
 compound_statement
-	: LBRACE RBRACE
-	| LBRACE block_statement RBRACE
+	: LBRACE RBRACE { printf("Statement: Empty Compound\n");}
+	| LBRACE block_statement RBRACE { printf("Statement: Compound\n");}
 	;
 
 block_statement
