@@ -1,7 +1,6 @@
 %{
 #include <stdio.h>
 extern int yylex();
-extern FILE* yyin;
 void yyerror(const char *s);
 %}
 
@@ -110,8 +109,8 @@ specifier_qualifier_list
 declaration
 	: specifier_qualifier_list IDENTIFIER 
 	| specifier_qualifier_list IDENTIFIER COMMA
-	| specifier_qualifier_list IDENTIFIER SEMICOLON { printf("DECLARATION\n");}
-	| specifier_qualifier_list IDENTIFIER ASSIGN expression SEMICOLON { printf("DECLARATION\n");}
+	| specifier_qualifier_list IDENTIFIER SEMICOLON { printf("Declaration\n");}
+	| specifier_qualifier_list IDENTIFIER ASSIGN expression SEMICOLON { printf("Declaration\n");}
 	;
 
 declaration_list
@@ -150,31 +149,31 @@ statement
 	;
 
 expression_statement
-	: SEMICOLON { printf("STATEMENT\n"); }
-	| expression SEMICOLON  { printf("STATEMENT\n");}
+	: SEMICOLON { printf("Statement: Empty Expression\n"); }
+	| expression SEMICOLON  { printf("Statement: Expression\n");}
 	;
 
 assign_statement
-	: IDENTIFIER ASSIGN expression SEMICOLON { printf("STATEMENT\n");}
+	: IDENTIFIER ASSIGN expression SEMICOLON { printf("Statement: Assign\n");}
 	;
 
 if_statement
-	: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement { printf("IF - ELSE\nSTATEMENT\n");}
-	| IF LPARENTHESIS expression RPARENTHESIS statement {printf("IF\nSTATEMENT\n");}
+	: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement { printf("IF-ELSE\nStatement: IF-ELSE\n");}
+	| IF LPARENTHESIS expression RPARENTHESIS statement {printf("IF\nStatement: IF\n");}
 	;
 
 loop_statement
-	: WHILE LPARENTHESIS expression RPARENTHESIS statement { printf("STATEMENT\n");}
-	| FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON expression RPARENTHESIS statement { printf("STATEMENT\n");}
+	: WHILE LPARENTHESIS expression RPARENTHESIS statement { printf("Statement: While\n");}
+	| FOR LPARENTHESIS expression SEMICOLON expression SEMICOLON expression RPARENTHESIS statement { printf("Statement: For\n");}
 	;
 
 return_statement
-	: RETURN expression SEMICOLON { printf("STATEMENT\n");}
+	: RETURN expression SEMICOLON { printf("Statement: Return\n");}
 	;
 
 compound_statement
-	: LBRACE RBRACE { printf("STATEMENT\n");}
-	| LBRACE block_statement RBRACE { printf("STATEMENT\n");}
+	: LBRACE RBRACE { printf("Statement: Empty Compound\n");}
+	| LBRACE block_statement RBRACE { printf("Statement: Compound\n");}
 	;
 
 block_statement
@@ -188,7 +187,7 @@ block_item
 	;
 
 function_definition
-	: specifier_qualifier_list declarator function_body_statement {printf("FUNCTION_DEF\n");}
+	: specifier_qualifier_list declarator function_body_statement {printf("FUNC_DEF\n");}
 	;
 
 function_body_statement
@@ -197,7 +196,7 @@ function_body_statement
 	;
 
 function_call_statement
-	: function_call SEMICOLON { printf("STATEMENT\n");}
+	: function_call SEMICOLON { printf("Statement: Function Call\n");}
 	;
 
 function_call
@@ -215,13 +214,7 @@ parameter_list
 
 %%
 
-int main(int argc, char** argv){
-	if(argc > 1){
-		yyin = fopen(argv[1], "r");
-	}
-	else{
-		yyin = stdin;
-	}
+int main(){
 	yyparse();
 }
 
