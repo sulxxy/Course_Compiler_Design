@@ -1,8 +1,71 @@
 %{
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+//#define true 1
+//#define false 0
 extern int yylex();
 extern FILE* yyin;
+extern char* yytext;
 void yyerror(const char *s);
+
+char* STATES_NAME[] = {"camera", "primitive", "texture", "material", "light"};
+char* current_shader = NULL;
+int index_of_shader = 0;
+bool ignore_the_error_inside_interface = false;
+char* Camera_states[] = {"rt_RayOrigin", "rt_RayDirection", "rt_InverseRayDirection" , "rt_Epsilon"  , "rt_HitDistance" , "rt_ScreenCoord" , "rt_LensCoord", "rt_du", "rt_dv", "rt_TimeSeed", "generateRay" };
+char* Primitive_states[] = {"rt_RayOrigin", "rt_RayDirection" , "rt_InverseRayDirection " , "rt_Epsilon", "rt_HitDistance" , "rt_BoundMin" , "rt_BoundMax" , "rt_GeometricNormal " , "rt_dPdu" , "rt_dPdv" , "rt_ShadingNormal " , "rt_TextureUV" , "rt_TextureUVW", "rt_dsdu", "rt_dsdv", "rt_PDF", "rt_TimeSeed", "intersect" ,"computeBounds" ,"computeNormal" ,"computeTextureCoordinates" ,"computeDerivatives" ,"generateSample" ,"samplePDF" };
+char* Texture_states[] = {"rt_TextureUV"  , "rt_TextureUVW " , "rt_TextureColor " , "rt_FloatTextureValue " , "rt_du" , "rt_dv" , "rt_dsdu"  , "rt_dtdu" , "rt_dsdv" , "rt_dtdv" , "rt_dPdu " , "rt_dPdv " , "rt_TimeSeed", "lookup" }; char* Material_states[] = {"rt_RayOrigin" , "rt_RayDirection" , "rt_InverseRayDirection " , "rt_HitPoint" , "rt_dPdu" , "rt_dPdv" , "rt_LightDirection" , "rt_LightDistance" , "rt_LightColor" , "rt_EmissionColor " , "rt_BSDFSeed" , "rt_TimeSeed" , "rt_PDF" , "rt_SampleColor" , "rt_BSDFValue" , "rt_du" , "rt_dv", "shade" ,"BSDF" ,"sampleBSDF" ,"evaluatePDF" ,"emission" };
+char* Light_states[] = {"rt_HitPoint" , "rt_GeometricNormal " , "rt_ShadingNormal " , "rt_LightDirection " , "rt_TimeSeed", "illumination" };
+
+char** All[] = {Camera_states, Primitive_states, Texture_states, Material_states, Light_states};
+int State_size[] = {sizeof(Camera_states)/sizeof(Camera_states[0]),
+	sizeof(Primitive_states)/sizeof(Primitive_states[0]), 
+	sizeof(Texture_states)/sizeof(Texture_states[0]), 
+	sizeof(Material_states)/sizeof(Material_states[0]), 
+	sizeof(Light_states)/sizeof(Light_states[0])};
+
+
+/*find current text belongs to which state*/
+int get_index(char* text){
+	for(int i = 0; i < sizeof(All)/sizeof(All[0]); i++){
+		for(int j = 0; j < State_size[i]; j++){
+			//printf("%d, %d, %s\n", i, j, All[i][j]);
+			if(!strcmp(text, All[i][j])){
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+bool is_state_in_current_shader(char* text){
+	for(int i = 0; i < State_size[index_of_shader]; i++){
+		//printf("TEST: %d, %s, %s, %s\n",index_of_shader, All[index_of_shader][i], current_shader, text);
+		if(!strcmp(All[index_of_shader][i], text))
+			return true;
+	}
+	return false;
+}
+
+void check_state(char* text){
+	char ret[100] = "0";
+	//is_state_in_current_shader(text);
+	if(!is_state_in_current_shader(text) &&  strcmp(STATES_NAME[get_index(text)],current_shader) ){
+		sprintf(ret, "%s cannot access a state of %s", current_shader, STATES_NAME[get_index(text)]);
+		yyerror(ret);
+	}
+}
+
+void check_interface(char* text){
+	char ret[100] = "0";
+	if(strcmp(STATES_NAME[get_index(text)],current_shader)){
+		sprintf(ret, "%s cannot have an interface method of %s", current_shader, STATES_NAME[get_index(text)]);
+		ignore_the_error_inside_interface = true;
+		yyerror(ret);
+	}
+}
+
 %}
 
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
@@ -24,6 +87,26 @@ void yyerror(const char *s);
 
 %token PRIMITIVE CAMERA MATERIAL TEXTURE LIGHT
 
+%token RAYORIGIN RAYDIRECTION INVERSERAYDIRECTION EPSILON HITDISTANCE SCREENCOORD LENSCOORD DU DV TIMESEED
+
+%token BOUNDMIN BOUNDMAX DPDU DPDV SHADINGNORMAL TEXTUREUV TEXTUREUVW DSDU DSDV PDF
+
+%token TEXTURECOLOR FLOATTEXTUREVALUE DTDU DTDV
+
+%token LIGHTDISTANCE LIGHTCOLOR EMISSIONCOLOR BSDFSEED SAMPLECOLOR BSDFVALUE
+
+%token HITPOINT GEOMETRICNORMAL LIGHTDIRECTION
+
+%token INTERFACE_GENERATERAY
+
+%token INTERFACE_INTERSECT INTERFACE_COMPUTEBOUNDS INTERFACE_COMPUTENORMAL INTERFACE_COMPUTETEXTURECOORDINATES INTERFACE_COMPUTEDERIVATIVES INTERFACE_GENERATESAMPLE INTERFACE_SAMPLEPDF
+
+%token INTERFACE_LOOKUP
+
+%token INTERFACE_SHADE INTERFACE_BSDF INTERFACE_SAMPLEBSDF INTERFACE_EVALUATEPDF INTERFACE_EMISSION
+
+%token INTERFACE_ILLUMINATION
+
 
 %%
 
@@ -39,11 +122,47 @@ primary_statement
 	;
 
 rt
-	: PRIMITIVE { printf("SHADER_DEF primitive\n");}
-	| CAMERA  { printf("SHADER_DEF camera\n");}
-	| MATERIAL { printf("SHADER_DEF material\n");}
-	| TEXTURE { printf("SHADER_DEF texture\n");}
-	| LIGHT { printf("SHADER_DEF light\n");}
+	: CAMERA  { printf("SHADER_DEF camera\n"); index_of_shader = 0; current_shader = "camera";}
+	| PRIMITIVE { printf("SHADER_DEF primitive\n"); index_of_shader = 1; current_shader = "primitive";}
+	| MATERIAL { printf("SHADER_DEF material\n"); index_of_shader = 2; current_shader = "material";}
+	| TEXTURE { printf("SHADER_DEF texture\n"); index_of_shader = 3; current_shader = "texture";}
+	| LIGHT { printf("SHADER_DEF light\n"); index_of_shader = 4; current_shader = "light";}
+	;
+
+shader_states
+	: RAYORIGIN
+	| RAYDIRECTION
+	| INVERSERAYDIRECTION
+	| EPSILON
+	| HITDISTANCE 
+	| SCREENCOORD 
+	| LENSCOORD 
+	| DU 
+	| DV 
+	| TIMESEED
+	| BOUNDMIN 
+	| BOUNDMAX 
+	| DPDU 
+	| DPDV 
+	| SHADINGNORMAL 
+	| TEXTUREUV 
+	| TEXTUREUVW 
+	| DSDU 
+	| DSDV 
+	| PDF
+	| TEXTURECOLOR 
+	| FLOATTEXTUREVALUE 
+	| DTDU 
+	| DTDV
+	| LIGHTDISTANCE 
+	| LIGHTCOLOR 
+	| EMISSIONCOLOR 
+	| BSDFSEED 
+	| SAMPLECOLOR 
+	| BSDFVALUE
+	| HITPOINT 
+	| GEOMETRICNORMAL 
+	| LIGHTDIRECTION
 	;
 
 shader_def
@@ -53,7 +172,7 @@ shader_def
 
 type_specifier
 	: VOID
-	| CHAR
+	|  CHAR
 	| SHORT
 	| INT 
 	| LONG
@@ -100,6 +219,24 @@ type_qualifier
 	| PRIVATE
 	;
 
+interface
+	: INTERFACE_GENERATERAY  		{ check_interface(yytext);}
+	| INTERFACE_INTERSECT   		{ check_interface(yytext);}
+	| INTERFACE_COMPUTEBOUNDS		{ check_interface(yytext);}    
+	| INTERFACE_COMPUTENORMAL 		{ check_interface(yytext);}   
+	| INTERFACE_COMPUTETEXTURECOORDINATES   { check_interface(yytext);}
+	| INTERFACE_COMPUTEDERIVATIVES   	{ check_interface(yytext);}
+	| INTERFACE_GENERATESAMPLE   		{ check_interface(yytext);}
+	| INTERFACE_SAMPLEPDF   		{ check_interface(yytext);}
+	| INTERFACE_LOOKUP   			{ check_interface(yytext);}
+	| INTERFACE_SHADE   			{ check_interface(yytext);}
+	| INTERFACE_BSDF   			{ check_interface(yytext);}
+	| INTERFACE_SAMPLEBSDF   		{ check_interface(yytext);}
+	| INTERFACE_EVALUATEPDF   		{ check_interface(yytext);}
+	| INTERFACE_EMISSION   			{ check_interface(yytext);}
+	| INTERFACE_ILLUMINATION                { check_interface(yytext);}    
+	;
+
 specifier_qualifier_list
 	: type_specifier specifier_qualifier_list
 	| type_specifier
@@ -123,10 +260,13 @@ declaration_list
 declarator
 	: IDENTIFIER LPARENTHESIS RPARENTHESIS
 	| IDENTIFIER LPARENTHESIS declaration_list RPARENTHESIS
+	| interface LPARENTHESIS RPARENTHESIS { ignore_the_error_inside_interface = false;}
+	| interface LPARENTHESIS declaration_list RPARENTHESIS  { ignore_the_error_inside_interface = false;}
 	| LPARENTHESIS declarator RPARENTHESIS
 	| declarator LPARENTHESIS RPARENTHESIS
 	| declarator LPARENTHESIS declaration_list RPARENTHESIS
 	;
+
 
 expression
 	: expression operator expression
@@ -134,6 +274,7 @@ expression
 	| I_CONSTANT
 	| F_CONSTANT
 	| function_call
+	| shader_states {check_state(yytext);}
 	| LPARENTHESIS expression RPARENTHESIS
 	|
 	;
@@ -210,7 +351,6 @@ parameter_list
 	: expression
 	| expression COMMA expression
 	| function_call COMMA expression
-	| expression COMMA function_call
 	;
 
 %%
@@ -227,5 +367,5 @@ int main(int argc, char** argv){
 
 void yyerror(const char *s){
 	fflush(stdout);
-	fprintf(stderr, "*** %s\n", s);
+	fprintf(stderr, "ERROR: %s\n", s);
 }

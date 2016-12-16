@@ -1,0 +1,2 @@
+RTSL.y: conflicts: 39 shift/reduce
+ERROR: camera cannot have an interface method of material
