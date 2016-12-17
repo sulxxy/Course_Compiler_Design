@@ -335,13 +335,28 @@ void yyerror(const char *s);
 char* STATES_NAME[] = {"camera", "primitive", "texture", "material", "light"};
 char* current_shader = NULL;
 int index_of_shader = 0;
-bool ignore_the_error_inside_interface = false;
+
+/* desigin for test7: if the interface doesn't belongs to the current shader, then ignore the errors inside the implementation of the interface */
+bool ignore_the_error_inside_interface = false; 
+
+/* states and interfaces of camera. I don't list constructor, because every shader has this interface*/
 char* Camera_states[] = {"rt_RayOrigin", "rt_RayDirection", "rt_InverseRayDirection" , "rt_Epsilon"  , "rt_HitDistance" , "rt_ScreenCoord" , "rt_LensCoord", "rt_du", "rt_dv", "rt_TimeSeed", "generateRay" };
-char* Primitive_states[] = {"rt_RayOrigin", "rt_RayDirection" , "rt_InverseRayDirection " , "rt_Epsilon", "rt_HitDistance" , "rt_BoundMin" , "rt_BoundMax" , "rt_GeometricNormal " , "rt_dPdu" , "rt_dPdv" , "rt_ShadingNormal " , "rt_TextureUV" , "rt_TextureUVW", "rt_dsdu", "rt_dsdv", "rt_PDF", "rt_TimeSeed", "intersect" ,"computeBounds" ,"computeNormal" ,"computeTextureCoordinates" ,"computeDerivatives" ,"generateSample" ,"samplePDF" };
-char* Texture_states[] = {"rt_TextureUV"  , "rt_TextureUVW " , "rt_TextureColor " , "rt_FloatTextureValue " , "rt_du" , "rt_dv" , "rt_dsdu"  , "rt_dtdu" , "rt_dsdv" , "rt_dtdv" , "rt_dPdu " , "rt_dPdv " , "rt_TimeSeed", "lookup" }; char* Material_states[] = {"rt_RayOrigin" , "rt_RayDirection" , "rt_InverseRayDirection " , "rt_HitPoint" , "rt_dPdu" , "rt_dPdv" , "rt_LightDirection" , "rt_LightDistance" , "rt_LightColor" , "rt_EmissionColor " , "rt_BSDFSeed" , "rt_TimeSeed" , "rt_PDF" , "rt_SampleColor" , "rt_BSDFValue" , "rt_du" , "rt_dv", "shade" ,"BSDF" ,"sampleBSDF" ,"evaluatePDF" ,"emission" };
+
+/* states and interfaces of primitive. I don't list constructor, because every shader has this interface*/
+char* Primitive_states[] = {"rt_RayOrigin", "rt_RayDirection" , "rt_InverseRayDirection " , "rt_Epsilon", "rt_HitDistance" ,"rt_HitPoint", "rt_BoundMin" , "rt_BoundMax" , "rt_GeometricNormal " , "rt_dPdu" , "rt_dPdv" , "rt_ShadingNormal " , "rt_TextureUV" , "rt_TextureUVW", "rt_dsdu", "rt_dsdv", "rt_PDF", "rt_TimeSeed", "intersect" ,"computeBounds" ,"computeNormal" ,"computeTextureCoordinates" ,"computeDerivatives" ,"generateSample" ,"samplePDF" };
+
+/* states and interfaces of texture. I don't list constructor, because every shader has this interface*/
+char* Texture_states[] = {"rt_TextureUV"  , "rt_TextureUVW " , "rt_TextureColor " , "rt_FloatTextureValue " , "rt_du" , "rt_dv" , "rt_dsdu"  , "rt_dtdu" , "rt_dsdv" , "rt_dtdv" , "rt_dPdu " , "rt_dPdv " , "rt_TimeSeed", "lookup" };
+
+/* states and interfaces of material. I don't list constructor, because every shader has this interface*/
+char* Material_states[] = {"rt_RayOrigin" , "rt_RayDirection" , "rt_InverseRayDirection " , "rt_HitPoint" ,"rt_ShadingNormal", "rt_HitDistance", "rt_dPdu" , "rt_dPdv" , "rt_LightDirection" , "rt_LightDistance" , "rt_LightColor" , "rt_EmissionColor " , "rt_BSDFSeed" , "rt_TimeSeed" , "rt_PDF" , "rt_SampleColor" , "rt_BSDFValue" , "rt_du" , "rt_dv", "shade" ,"BSDF" ,"sampleBSDF" ,"evaluatePDF" ,"emission" };
+
+/* states and interfaces of light. I don't list constructor, because every shader has this interface*/
 char* Light_states[] = {"rt_HitPoint" , "rt_GeometricNormal " , "rt_ShadingNormal " , "rt_LightDirection " , "rt_TimeSeed", "illumination" };
 
 char** All[] = {Camera_states, Primitive_states, Texture_states, Material_states, Light_states};
+
+/* State_size[] is used to store the size of every shader states(and interface) array */
 int State_size[] = {sizeof(Camera_states)/sizeof(Camera_states[0]),
 	sizeof(Primitive_states)/sizeof(Primitive_states[0]), 
 	sizeof(Texture_states)/sizeof(Texture_states[0]), 
@@ -349,7 +364,10 @@ int State_size[] = {sizeof(Camera_states)/sizeof(Camera_states[0]),
 	sizeof(Light_states)/sizeof(Light_states[0])};
 
 
-/*find current text belongs to which state*/
+/* Desc: find current text belongs to which shader
+ * Parameter: yytext from Lexer. When calling this function, the text is always a state. 
+ * Return Value: Normally(actually always), the function will return an index which can be used in State_names[] or State_size[] to indicate the parameter(state) belongs to which shader; otherwise, return -1. This branch would never be reached, just to avoid warning by compiler 
+*/
 int get_index(char* text){
 	for(int i = 0; i < sizeof(All)/sizeof(All[0]); i++){
 		for(int j = 0; j < State_size[i]; j++){
@@ -362,6 +380,10 @@ int get_index(char* text){
 	return -1;
 }
 
+/* Desc: judge whether the state belongs to current shader
+ * Parameter: text(state)
+ * Return Value: return true if the state is in current shader; otherwise false
+*/
 bool is_state_in_current_shader(char* text){
 	for(int i = 0; i < State_size[index_of_shader]; i++){
 		//printf("TEST: %d, %s, %s, %s\n",index_of_shader, All[index_of_shader][i], current_shader, text);
@@ -371,19 +393,33 @@ bool is_state_in_current_shader(char* text){
 	return false;
 }
 
+/* Desc: check whether current state got from Lexer is legal in current context
+ * Parameter: text(state)
+ * Return Value: None; if illegal, call yyerror(char* );
+*/
 void check_state(char* text){
 	char ret[100] = "0";
-	//is_state_in_current_shader(text);
+	/* First condition: judge whether the state belongs to current shader
+	 * Second condition: judge wheter the state holder is current shader
+	 * The reason why setting the first condition:
+	 * Normally, if a state only belongs to one shader, such as rt_LensCoord only belongs to Camera, ignoring the first condition wont have any problem.
+         * However, if a state is shared by one more shader, then we need the first condition to avoid error. For example, both shader Camera and Primitive have a state called rt_RayOrigin, if the current shader is Primitive and the parameter is rt_RayOrigin, then the second condition will be true. Without the first condition, there would be a wrong error message in this case.
+        */
 	if(!is_state_in_current_shader(text) &&  strcmp(STATES_NAME[get_index(text)],current_shader) ){
 		sprintf(ret, "%s cannot access a state of %s", current_shader, STATES_NAME[get_index(text)]);
 		yyerror(ret);
 	}
 }
 
+/* Desc: check whether current interface got from Lexer is legal in current context
+ * Parameter: text(state)
+ * Return Value: None; if illegal, call yyerror(char* );
+*/
 void check_interface(char* text){
 	char ret[100] = "0";
 	if(strcmp(STATES_NAME[get_index(text)],current_shader)){
 		sprintf(ret, "%s cannot have an interface method of %s", current_shader, STATES_NAME[get_index(text)]);
+		/* if the interface is illegal, ignore the errors inside the definition of the interface. Test7 follows this rule*/
 		ignore_the_error_inside_interface = true;
 		yyerror(ret);
 	}
@@ -422,7 +458,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 426 "RTSL.yy.c"
+#line 462 "RTSL.yy.c"
 
 #ifdef short
 # undef short
@@ -727,7 +763,7 @@ static const yytype_int16 yyrhs[] =
 {
      127,     0,    -1,   127,   140,    -1,   127,   130,    -1,   127,
      149,    -1,   127,   136,    -1,   130,    -1,   140,    -1,   149,
-      -1,   136,    -1,    74,    -1,    73,    -1,    75,    -1,    76,
+      -1,   136,    -1,    74,    -1,    73,    -1,    76,    -1,    75,
       -1,    77,    -1,    78,    -1,    79,    -1,    80,    -1,    81,
       -1,    82,    -1,    83,    -1,    84,    -1,    85,    -1,    86,
       -1,    87,    -1,    88,    -1,    89,    -1,    90,    -1,    91,
@@ -771,22 +807,22 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   114,   114,   115,   116,   117,   118,   119,   120,   121,
-     125,   126,   127,   128,   129,   133,   134,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   169,   174,
-     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,   189,   190,   191,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   217,   218,   219,   223,   224,
-     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
-     235,   236,   237,   241,   242,   243,   244,   248,   249,   250,
-     251,   255,   256,   261,   262,   263,   264,   265,   266,   267,
-     272,   273,   274,   275,   276,   277,   278,   279,   284,   285,
-     286,   287,   288,   289,   290,   294,   295,   299,   303,   304,
-     308,   309,   313,   317,   318,   322,   323,   327,   328,   332,
-     336,   337,   341,   345,   346,   351,   352,   353
+       0,   150,   150,   151,   152,   153,   154,   155,   156,   157,
+     161,   162,   163,   164,   165,   169,   170,   171,   172,   173,
+     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
+     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
+     194,   195,   196,   197,   198,   199,   200,   201,   205,   210,
+     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   231,   232,   233,
+     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
+     244,   245,   246,   247,   248,   253,   254,   255,   259,   260,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   277,   278,   279,   280,   284,   285,   286,
+     287,   291,   292,   297,   298,   299,   300,   301,   302,   303,
+     308,   309,   310,   311,   312,   313,   314,   315,   320,   321,
+     322,   323,   324,   325,   326,   330,   331,   335,   339,   340,
+     344,   345,   349,   353,   354,   358,   359,   363,   364,   368,
+     372,   373,   377,   381,   382,   386,   387,   388
 };
 #endif
 
@@ -916,7 +952,7 @@ static const yytype_uint8 yydefact[] =
      155,   124,     0,     0,   107,   144,   146,   126,     0,     0,
      142,     0,     0,     0,     0,   108,   109,   127,     0,     0,
        0,   127,     0,   149,   120,   127,   127,   154,   137,    11,
-      10,    12,    13,    14,     0,   127,   127,   127,   153,   113,
+      10,    13,    12,    14,     0,   127,   127,   127,   153,   113,
      111,     0,     0,   117,   115,     0,   150,   127,   118,     0,
      156,   157,    48,   139,   140,     0,   114,   112,   110,   116,
      151,   119,   127,   127,   138,     0,   127,   141
@@ -2096,193 +2132,193 @@ yyreduce:
   switch (yyn)
     {
         case 10:
-#line 125 "RTSL.y"
+#line 161 "RTSL.y"
     { printf("SHADER_DEF camera\n"); index_of_shader = 0; current_shader = "camera";;}
     break;
 
   case 11:
-#line 126 "RTSL.y"
+#line 162 "RTSL.y"
     { printf("SHADER_DEF primitive\n"); index_of_shader = 1; current_shader = "primitive";;}
     break;
 
   case 12:
-#line 127 "RTSL.y"
-    { printf("SHADER_DEF material\n"); index_of_shader = 2; current_shader = "material";;}
+#line 163 "RTSL.y"
+    { printf("SHADER_DEF texture\n"); index_of_shader = 2; current_shader = "texture";;}
     break;
 
   case 13:
-#line 128 "RTSL.y"
-    { printf("SHADER_DEF texture\n"); index_of_shader = 3; current_shader = "texture";;}
+#line 164 "RTSL.y"
+    { printf("SHADER_DEF material\n"); index_of_shader = 3; current_shader = "material";;}
     break;
 
   case 14:
-#line 129 "RTSL.y"
+#line 165 "RTSL.y"
     { printf("SHADER_DEF light\n"); index_of_shader = 4; current_shader = "light";;}
     break;
 
   case 88:
-#line 223 "RTSL.y"
+#line 259 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 89:
-#line 224 "RTSL.y"
+#line 260 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 90:
-#line 225 "RTSL.y"
+#line 261 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 91:
-#line 226 "RTSL.y"
+#line 262 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 92:
-#line 227 "RTSL.y"
+#line 263 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 93:
-#line 228 "RTSL.y"
+#line 264 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 94:
-#line 229 "RTSL.y"
+#line 265 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 95:
-#line 230 "RTSL.y"
+#line 266 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 96:
-#line 231 "RTSL.y"
+#line 267 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 97:
-#line 232 "RTSL.y"
+#line 268 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 98:
-#line 233 "RTSL.y"
+#line 269 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 99:
-#line 234 "RTSL.y"
+#line 270 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 100:
-#line 235 "RTSL.y"
+#line 271 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 101:
-#line 236 "RTSL.y"
+#line 272 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 102:
-#line 237 "RTSL.y"
+#line 273 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
   case 109:
-#line 250 "RTSL.y"
+#line 286 "RTSL.y"
     { printf("DECLARATION\n");;}
     break;
 
   case 110:
-#line 251 "RTSL.y"
+#line 287 "RTSL.y"
     { printf("DECLARATION\n");;}
     break;
 
   case 115:
-#line 263 "RTSL.y"
+#line 299 "RTSL.y"
     { ignore_the_error_inside_interface = false;;}
     break;
 
   case 116:
-#line 264 "RTSL.y"
+#line 300 "RTSL.y"
     { ignore_the_error_inside_interface = false;;}
     break;
 
   case 125:
-#line 277 "RTSL.y"
+#line 313 "RTSL.y"
     {check_state(yytext);;}
     break;
 
   case 135:
-#line 294 "RTSL.y"
+#line 330 "RTSL.y"
     { printf("STATEMENT\n"); ;}
     break;
 
   case 136:
-#line 295 "RTSL.y"
+#line 331 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 137:
-#line 299 "RTSL.y"
+#line 335 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 138:
-#line 303 "RTSL.y"
+#line 339 "RTSL.y"
     { printf("IF - ELSE\nSTATEMENT\n");;}
     break;
 
   case 139:
-#line 304 "RTSL.y"
+#line 340 "RTSL.y"
     {printf("IF\nSTATEMENT\n");;}
     break;
 
   case 140:
-#line 308 "RTSL.y"
+#line 344 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 141:
-#line 309 "RTSL.y"
+#line 345 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 142:
-#line 313 "RTSL.y"
+#line 349 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 143:
-#line 317 "RTSL.y"
+#line 353 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 144:
-#line 318 "RTSL.y"
+#line 354 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 149:
-#line 332 "RTSL.y"
+#line 368 "RTSL.y"
     {printf("FUNCTION_DEF\n");;}
     break;
 
   case 152:
-#line 341 "RTSL.y"
+#line 377 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2286 "RTSL.yy.c"
+#line 2322 "RTSL.yy.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2496,7 +2532,7 @@ yyreturn:
 }
 
 
-#line 356 "RTSL.y"
+#line 391 "RTSL.y"
 
 
 int main(int argc, char** argv){
@@ -2511,6 +2547,6 @@ int main(int argc, char** argv){
 
 void yyerror(const char *s){
 	fflush(stdout);
-	fprintf(stderr, "ERROR: %s\n", s);
+	fprintf(stderr, "Error: %s\n", s);
 }
 

@@ -1,2 +1,2 @@
-RTSL.y: conflicts: 39 shift/reduce
-ERROR: camera cannot have an interface method of material
+RTSL.y: conflicts: 27 shift/reduce
+./compile.sh: line 4: 17319 Segmentation fault: 11  ./Parser.out $1

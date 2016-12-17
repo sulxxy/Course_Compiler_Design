@@ -12,13 +12,28 @@ void yyerror(const char *s);
 char* STATES_NAME[] = {"camera", "primitive", "texture", "material", "light"};
 char* current_shader = NULL;
 int index_of_shader = 0;
-bool ignore_the_error_inside_interface = false;
+
+/* desigin for test7: if the interface doesn't belongs to the current shader, then ignore the errors inside the implementation of the interface */
+bool ignore_the_error_inside_interface = false; 
+
+/* states and interfaces of camera. I don't list constructor, because every shader has this interface*/
 char* Camera_states[] = {"rt_RayOrigin", "rt_RayDirection", "rt_InverseRayDirection" , "rt_Epsilon"  , "rt_HitDistance" , "rt_ScreenCoord" , "rt_LensCoord", "rt_du", "rt_dv", "rt_TimeSeed", "generateRay" };
-char* Primitive_states[] = {"rt_RayOrigin", "rt_RayDirection" , "rt_InverseRayDirection " , "rt_Epsilon", "rt_HitDistance" , "rt_BoundMin" , "rt_BoundMax" , "rt_GeometricNormal " , "rt_dPdu" , "rt_dPdv" , "rt_ShadingNormal " , "rt_TextureUV" , "rt_TextureUVW", "rt_dsdu", "rt_dsdv", "rt_PDF", "rt_TimeSeed", "intersect" ,"computeBounds" ,"computeNormal" ,"computeTextureCoordinates" ,"computeDerivatives" ,"generateSample" ,"samplePDF" };
-char* Texture_states[] = {"rt_TextureUV"  , "rt_TextureUVW " , "rt_TextureColor " , "rt_FloatTextureValue " , "rt_du" , "rt_dv" , "rt_dsdu"  , "rt_dtdu" , "rt_dsdv" , "rt_dtdv" , "rt_dPdu " , "rt_dPdv " , "rt_TimeSeed", "lookup" }; char* Material_states[] = {"rt_RayOrigin" , "rt_RayDirection" , "rt_InverseRayDirection " , "rt_HitPoint" , "rt_dPdu" , "rt_dPdv" , "rt_LightDirection" , "rt_LightDistance" , "rt_LightColor" , "rt_EmissionColor " , "rt_BSDFSeed" , "rt_TimeSeed" , "rt_PDF" , "rt_SampleColor" , "rt_BSDFValue" , "rt_du" , "rt_dv", "shade" ,"BSDF" ,"sampleBSDF" ,"evaluatePDF" ,"emission" };
+
+/* states and interfaces of primitive. I don't list constructor, because every shader has this interface*/
+char* Primitive_states[] = {"rt_RayOrigin", "rt_RayDirection" , "rt_InverseRayDirection " , "rt_Epsilon", "rt_HitDistance" ,"rt_HitPoint", "rt_BoundMin" , "rt_BoundMax" , "rt_GeometricNormal " , "rt_dPdu" , "rt_dPdv" , "rt_ShadingNormal " , "rt_TextureUV" , "rt_TextureUVW", "rt_dsdu", "rt_dsdv", "rt_PDF", "rt_TimeSeed", "intersect" ,"computeBounds" ,"computeNormal" ,"computeTextureCoordinates" ,"computeDerivatives" ,"generateSample" ,"samplePDF" };
+
+/* states and interfaces of texture. I don't list constructor, because every shader has this interface*/
+char* Texture_states[] = {"rt_TextureUV"  , "rt_TextureUVW " , "rt_TextureColor " , "rt_FloatTextureValue " , "rt_du" , "rt_dv" , "rt_dsdu"  , "rt_dtdu" , "rt_dsdv" , "rt_dtdv" , "rt_dPdu " , "rt_dPdv " , "rt_TimeSeed", "lookup" };
+
+/* states and interfaces of material. I don't list constructor, because every shader has this interface*/
+char* Material_states[] = {"rt_RayOrigin" , "rt_RayDirection" , "rt_InverseRayDirection " , "rt_HitPoint" ,"rt_ShadingNormal", "rt_HitDistance", "rt_dPdu" , "rt_dPdv" , "rt_LightDirection" , "rt_LightDistance" , "rt_LightColor" , "rt_EmissionColor " , "rt_BSDFSeed" , "rt_TimeSeed" , "rt_PDF" , "rt_SampleColor" , "rt_BSDFValue" , "rt_du" , "rt_dv", "shade" ,"BSDF" ,"sampleBSDF" ,"evaluatePDF" ,"emission" };
+
+/* states and interfaces of light. I don't list constructor, because every shader has this interface*/
 char* Light_states[] = {"rt_HitPoint" , "rt_GeometricNormal " , "rt_ShadingNormal " , "rt_LightDirection " , "rt_TimeSeed", "illumination" };
 
 char** All[] = {Camera_states, Primitive_states, Texture_states, Material_states, Light_states};
+
+/* State_size[] is used to store the size of every shader states(and interface) array */
 int State_size[] = {sizeof(Camera_states)/sizeof(Camera_states[0]),
 	sizeof(Primitive_states)/sizeof(Primitive_states[0]), 
 	sizeof(Texture_states)/sizeof(Texture_states[0]), 
@@ -26,7 +41,10 @@ int State_size[] = {sizeof(Camera_states)/sizeof(Camera_states[0]),
 	sizeof(Light_states)/sizeof(Light_states[0])};
 
 
-/*find current text belongs to which state*/
+/* Desc: find current text belongs to which shader
+ * Parameter: yytext from Lexer. When calling this function, the text is always a state. 
+ * Return Value: Normally(actually always), the function will return an index which can be used in State_names[] or State_size[] to indicate the parameter(state) belongs to which shader; otherwise, return -1. This branch would never be reached, just to avoid warning by compiler 
+*/
 int get_index(char* text){
 	for(int i = 0; i < sizeof(All)/sizeof(All[0]); i++){
 		for(int j = 0; j < State_size[i]; j++){
@@ -39,6 +57,10 @@ int get_index(char* text){
 	return -1;
 }
 
+/* Desc: judge whether the state belongs to current shader
+ * Parameter: text(state)
+ * Return Value: return true if the state is in current shader; otherwise false
+*/
 bool is_state_in_current_shader(char* text){
 	for(int i = 0; i < State_size[index_of_shader]; i++){
 		//printf("TEST: %d, %s, %s, %s\n",index_of_shader, All[index_of_shader][i], current_shader, text);
@@ -48,19 +70,33 @@ bool is_state_in_current_shader(char* text){
 	return false;
 }
 
+/* Desc: check whether current state got from Lexer is legal in current context
+ * Parameter: text(state)
+ * Return Value: None; if illegal, call yyerror(char* );
+*/
 void check_state(char* text){
 	char ret[100] = "0";
-	//is_state_in_current_shader(text);
+	/* First condition: judge whether the state belongs to current shader
+	 * Second condition: judge wheter the state holder is current shader
+	 * The reason why setting the first condition:
+	 * Normally, if a state only belongs to one shader, such as rt_LensCoord only belongs to Camera, ignoring the first condition wont have any problem.
+         * However, if a state is shared by one more shader, then we need the first condition to avoid error. For example, both shader Camera and Primitive have a state called rt_RayOrigin, if the current shader is Primitive and the parameter is rt_RayOrigin, then the second condition will be true. Without the first condition, there would be a wrong error message in this case.
+        */
 	if(!is_state_in_current_shader(text) &&  strcmp(STATES_NAME[get_index(text)],current_shader) ){
 		sprintf(ret, "%s cannot access a state of %s", current_shader, STATES_NAME[get_index(text)]);
 		yyerror(ret);
 	}
 }
 
+/* Desc: check whether current interface got from Lexer is legal in current context
+ * Parameter: text(state)
+ * Return Value: None; if illegal, call yyerror(char* );
+*/
 void check_interface(char* text){
 	char ret[100] = "0";
 	if(strcmp(STATES_NAME[get_index(text)],current_shader)){
 		sprintf(ret, "%s cannot have an interface method of %s", current_shader, STATES_NAME[get_index(text)]);
+		/* if the interface is illegal, ignore the errors inside the definition of the interface. Test7 follows this rule*/
 		ignore_the_error_inside_interface = true;
 		yyerror(ret);
 	}
@@ -124,8 +160,8 @@ primary_statement
 rt
 	: CAMERA  { printf("SHADER_DEF camera\n"); index_of_shader = 0; current_shader = "camera";}
 	| PRIMITIVE { printf("SHADER_DEF primitive\n"); index_of_shader = 1; current_shader = "primitive";}
-	| MATERIAL { printf("SHADER_DEF material\n"); index_of_shader = 2; current_shader = "material";}
-	| TEXTURE { printf("SHADER_DEF texture\n"); index_of_shader = 3; current_shader = "texture";}
+	| TEXTURE { printf("SHADER_DEF texture\n"); index_of_shader = 2; current_shader = "texture";}
+	| MATERIAL { printf("SHADER_DEF material\n"); index_of_shader = 3; current_shader = "material";}
 	| LIGHT { printf("SHADER_DEF light\n"); index_of_shader = 4; current_shader = "light";}
 	;
 
@@ -346,7 +382,6 @@ function_call
 	| IDENTIFIER LPARENTHESIS parameter_list RPARENTHESIS
 	;
 
-/*warning here, "rule never reduced since confilicts: expr comma function_call", optimize later*/
 parameter_list
 	: expression
 	| expression COMMA expression
@@ -367,5 +402,5 @@ int main(int argc, char** argv){
 
 void yyerror(const char *s){
 	fflush(stdout);
-	fprintf(stderr, "ERROR: %s\n", s);
+	fprintf(stderr, "Error: %s\n", s);
 }

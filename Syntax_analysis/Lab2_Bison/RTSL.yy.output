@@ -54,8 +54,8 @@ Grammar
 
     9 rt: CAMERA
    10   | PRIMITIVE
-   11   | MATERIAL
-   12   | TEXTURE
+   11   | TEXTURE
+   12   | MATERIAL
    13   | LIGHT
 
    14 shader_states: RAYORIGIN
@@ -305,8 +305,8 @@ WHILE (326) 139
 FOR (327) 140
 PRIMITIVE (328) 10
 CAMERA (329) 9
-MATERIAL (330) 11
-TEXTURE (331) 12
+MATERIAL (330) 12
+TEXTURE (331) 11
 LIGHT (332) 13
 RAYORIGIN (333) 14
 RAYDIRECTION (334) 15
@@ -3344,16 +3344,16 @@ state 180
 
 state 181
 
-   11 rt: MATERIAL .
+   12 rt: MATERIAL .
 
-    $default  reduce using rule 11 (rt)
+    $default  reduce using rule 12 (rt)
 
 
 state 182
 
-   12 rt: TEXTURE .
+   11 rt: TEXTURE .
 
-    $default  reduce using rule 12 (rt)
+    $default  reduce using rule 11 (rt)
 
 
 state 183
