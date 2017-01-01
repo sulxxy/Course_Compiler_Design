@@ -320,7 +320,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "RTSL.y"
+#line 7 "RTSL.y"
 
 #include <stdio.h>
 #include <string.h>
@@ -807,22 +807,22 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   150,   150,   151,   152,   153,   154,   155,   156,   157,
-     161,   162,   163,   164,   165,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   205,   210,
-     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
-     221,   222,   223,   224,   225,   226,   227,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   253,   254,   255,   259,   260,
-     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
-     271,   272,   273,   277,   278,   279,   280,   284,   285,   286,
-     287,   291,   292,   297,   298,   299,   300,   301,   302,   303,
-     308,   309,   310,   311,   312,   313,   314,   315,   320,   321,
-     322,   323,   324,   325,   326,   330,   331,   335,   339,   340,
-     344,   345,   349,   353,   354,   358,   359,   363,   364,   368,
-     372,   373,   377,   381,   382,   386,   387,   388
+       0,   156,   156,   157,   158,   159,   160,   161,   162,   163,
+     167,   168,   169,   170,   171,   175,   176,   177,   178,   179,
+     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
+     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
+     200,   201,   202,   203,   204,   205,   206,   207,   211,   216,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   228,   229,   230,   231,   232,   233,   237,   238,   239,
+     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
+     250,   251,   252,   253,   254,   259,   260,   261,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
+     277,   278,   279,   283,   284,   285,   286,   290,   291,   292,
+     293,   297,   298,   303,   304,   305,   306,   307,   308,   309,
+     314,   315,   316,   317,   318,   319,   320,   321,   326,   327,
+     328,   329,   330,   331,   332,   336,   337,   341,   345,   346,
+     350,   351,   355,   359,   360,   364,   365,   369,   370,   374,
+     378,   379,   383,   387,   388,   392,   393,   394
 };
 #endif
 
@@ -2132,187 +2132,187 @@ yyreduce:
   switch (yyn)
     {
         case 10:
-#line 161 "RTSL.y"
+#line 167 "RTSL.y"
     { printf("SHADER_DEF camera\n"); index_of_shader = 0; current_shader = "camera";;}
     break;
 
   case 11:
-#line 162 "RTSL.y"
+#line 168 "RTSL.y"
     { printf("SHADER_DEF primitive\n"); index_of_shader = 1; current_shader = "primitive";;}
     break;
 
   case 12:
-#line 163 "RTSL.y"
+#line 169 "RTSL.y"
     { printf("SHADER_DEF texture\n"); index_of_shader = 2; current_shader = "texture";;}
     break;
 
   case 13:
-#line 164 "RTSL.y"
+#line 170 "RTSL.y"
     { printf("SHADER_DEF material\n"); index_of_shader = 3; current_shader = "material";;}
     break;
 
   case 14:
-#line 165 "RTSL.y"
+#line 171 "RTSL.y"
     { printf("SHADER_DEF light\n"); index_of_shader = 4; current_shader = "light";;}
     break;
 
   case 88:
-#line 259 "RTSL.y"
-    { check_interface(yytext);;}
-    break;
-
-  case 89:
-#line 260 "RTSL.y"
-    { check_interface(yytext);;}
-    break;
-
-  case 90:
-#line 261 "RTSL.y"
-    { check_interface(yytext);;}
-    break;
-
-  case 91:
-#line 262 "RTSL.y"
-    { check_interface(yytext);;}
-    break;
-
-  case 92:
-#line 263 "RTSL.y"
-    { check_interface(yytext);;}
-    break;
-
-  case 93:
-#line 264 "RTSL.y"
-    { check_interface(yytext);;}
-    break;
-
-  case 94:
 #line 265 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 95:
+  case 89:
 #line 266 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 96:
+  case 90:
 #line 267 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 97:
+  case 91:
 #line 268 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 98:
+  case 92:
 #line 269 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 99:
+  case 93:
 #line 270 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 100:
+  case 94:
 #line 271 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 101:
+  case 95:
 #line 272 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
-  case 102:
+  case 96:
 #line 273 "RTSL.y"
     { check_interface(yytext);;}
     break;
 
+  case 97:
+#line 274 "RTSL.y"
+    { check_interface(yytext);;}
+    break;
+
+  case 98:
+#line 275 "RTSL.y"
+    { check_interface(yytext);;}
+    break;
+
+  case 99:
+#line 276 "RTSL.y"
+    { check_interface(yytext);;}
+    break;
+
+  case 100:
+#line 277 "RTSL.y"
+    { check_interface(yytext);;}
+    break;
+
+  case 101:
+#line 278 "RTSL.y"
+    { check_interface(yytext);;}
+    break;
+
+  case 102:
+#line 279 "RTSL.y"
+    { check_interface(yytext);;}
+    break;
+
   case 109:
-#line 286 "RTSL.y"
+#line 292 "RTSL.y"
     { printf("DECLARATION\n");;}
     break;
 
   case 110:
-#line 287 "RTSL.y"
+#line 293 "RTSL.y"
     { printf("DECLARATION\n");;}
     break;
 
   case 115:
-#line 299 "RTSL.y"
+#line 305 "RTSL.y"
     { ignore_the_error_inside_interface = false;;}
     break;
 
   case 116:
-#line 300 "RTSL.y"
+#line 306 "RTSL.y"
     { ignore_the_error_inside_interface = false;;}
     break;
 
   case 125:
-#line 313 "RTSL.y"
+#line 319 "RTSL.y"
     {check_state(yytext);;}
     break;
 
   case 135:
-#line 330 "RTSL.y"
+#line 336 "RTSL.y"
     { printf("STATEMENT\n"); ;}
     break;
 
   case 136:
-#line 331 "RTSL.y"
+#line 337 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 137:
-#line 335 "RTSL.y"
+#line 341 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 138:
-#line 339 "RTSL.y"
+#line 345 "RTSL.y"
     { printf("IF - ELSE\nSTATEMENT\n");;}
     break;
 
   case 139:
-#line 340 "RTSL.y"
+#line 346 "RTSL.y"
     {printf("IF\nSTATEMENT\n");;}
     break;
 
   case 140:
-#line 344 "RTSL.y"
+#line 350 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 141:
-#line 345 "RTSL.y"
+#line 351 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 142:
-#line 349 "RTSL.y"
+#line 355 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 143:
-#line 353 "RTSL.y"
+#line 359 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 144:
-#line 354 "RTSL.y"
+#line 360 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
   case 149:
-#line 368 "RTSL.y"
+#line 374 "RTSL.y"
     {printf("FUNCTION_DEF\n");;}
     break;
 
   case 152:
-#line 377 "RTSL.y"
+#line 383 "RTSL.y"
     { printf("STATEMENT\n");;}
     break;
 
@@ -2532,7 +2532,7 @@ yyreturn:
 }
 
 
-#line 391 "RTSL.y"
+#line 397 "RTSL.y"
 
 
 int main(int argc, char** argv){
