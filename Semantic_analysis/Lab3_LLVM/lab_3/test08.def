@@ -1,0 +1,8 @@
+Variable a may be uninitialized on line 13
+Variable e may be uninitialized on line 21
+Variable c may be uninitialized on line 22
+Variable g may be uninitialized on line 27
+Variable b may be uninitialized on line 34
+Variable c may be uninitialized on line 34
+Variable f may be uninitialized on line 34
+Variable g may be uninitialized on line 34

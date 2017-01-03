@@ -36,12 +36,12 @@ Be sure that your lexer understands all keywords present in the three shader fil
 
 ## Example
 The following example illustrates the expected output for a number of tokens, including the swizzle operator. The code
-~~~~
+```
 vec2 pos;
 pos.x = 0;
-~~~~
+```
 should return the following tokens:
-~~~~
+```
 TYPE vec2
 IDENTIFIER pos
 SEMICOLON
@@ -50,7 +50,7 @@ SWIZZLE x
 ASSIGN
 INT 0
 SEMICOLON
-~~~~
+```
 For a more detailed example output, see the sphere.out file.
 
 ## Error Reporting
