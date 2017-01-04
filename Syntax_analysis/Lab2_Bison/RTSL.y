@@ -19,7 +19,7 @@ char* STATES_NAME[] = {"camera", "primitive", "texture", "material", "light"};
 char* current_shader = NULL;
 int index_of_shader = 0;
 
-/* desigin for test7: if the interface doesn't belongs to the current shader, then ignore the errors inside the implementation of the interface */
+/* design for test7: if the interface doesn't belongs to the current shader, then ignore the errors inside the implementation of the interface */
 bool ignore_the_error_inside_interface = false; 
 
 /* states and interfaces of camera. I don't list constructor, because every shader has this interface*/
@@ -47,7 +47,7 @@ int State_size[] = {sizeof(Camera_states)/sizeof(Camera_states[0]),
 	sizeof(Light_states)/sizeof(Light_states[0])};
 
 
-/* Desc: find current text belongs to which shader
+/* Description: find current text belongs to which shader
  * Parameter: yytext from Lexer. When calling this function, the text is always a state. 
  * Return Value: Normally(actually always), the function will return an index which can be used in State_names[] or State_size[] to indicate the parameter(state) belongs to which shader; otherwise, return -1. This branch would never be reached, just to avoid warning by compiler 
 */
@@ -63,7 +63,7 @@ int get_index(char* text){
 	return -1;
 }
 
-/* Desc: judge whether the state belongs to current shader
+/* Description: judge whether the state belongs to current shader
  * Parameter: text(state)
  * Return Value: return true if the state is in current shader; otherwise false
 */
@@ -76,7 +76,7 @@ bool is_state_in_current_shader(char* text){
 	return false;
 }
 
-/* Desc: check whether current state got from Lexer is legal in current context
+/* Description: check whether current state got from Lexer is legal in current context
  * Parameter: text(state)
  * Return Value: None; if illegal, call yyerror(char* );
 */
@@ -94,7 +94,7 @@ void check_state(char* text){
 	}
 }
 
-/* Desc: check whether current interface got from Lexer is legal in current context
+/* Description: check whether current interface got from Lexer is legal in current context
  * Parameter: text(state)
  * Return Value: None; if illegal, call yyerror(char* );
 */
