@@ -1,5 +1,5 @@
 # Compiler Design
-Notes, material, homework and projects in the course of Complier Design
+Notes, material, homework and projects in the course "Complier Design"
 
 # Content
 * [Chapter 1. Introduction](https://github.com/sulxxy/Course_Compiler_Design/tree/master/Introduction)
