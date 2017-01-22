@@ -18,22 +18,29 @@ namespace {
 class MyBlockPass : public BasicBlockPass {
 public:
     static char ID;
-    MyBlockPass() : BasicBlockPass(ID) {}
+    int flag;
+    MyBlockPass() : BasicBlockPass(ID) { flag = 0; }
 
     virtual bool runOnBasicBlock(BasicBlock &BB) {
-      errs().write_escaped(BB.getName()) << '\n';
+      //errs().write_escaped(BB.getName()) << '\n';
+        std::string name1 = "sss";
+        std::string name2 = "ttt";
+        if(flag == 0){
+            BB.setName(name1);
+        }
+        else{
+
+            BB.setName(name2);
+        }
+        flag++;
+      errs()  << "TEST:" << BB.getName() << '\n';
       // iterating instructions in the current BasickBlock
       for(Instruction &i : BB){
-          //errs() << "Instruction: ";
-          //i.print(errs());
-          //errs() << '\n';
+          errs() << "--------------------\n";
+          errs() << "Line Number: " << i.getDebugLoc().getLine() << '\n';
+          i.print(errs());
+          errs() << '\n';
           errs() << " - "<< i.getOpcodeName() << " : ";
-          if(AllocaInst *al = dynamic_cast<AllocaInst*>(&i)){
-              errs() << "TEST: This is an allocation statement\n" << al->getName() << '\n';
-          }
-          if(StoreInst *sl = dynamic_cast<StoreInst*>(&i)){
-              errs() << "TEST: This is an store statement\n" << sl->getName() << '\n';
-          }
           Type *type = i.getType();
           type->print(errs());
           errs() << '\n';

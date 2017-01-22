@@ -10,10 +10,10 @@
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Instruction.h>
 #include <llvm/IR/Instructions.h>
-#include <llvm/IR/CFG.h>
-#include <llvm/IR/InstIterator.h>
+#include <llvm/Analysis/CFG.h>
+//#include <llvm/IR/InstIterator.h>
 #include <llvm/IR/Constants.h>
-#include <llvm/IR/ValueMap.h>
+#include <llvm/ADT/ValueMap.h>
 #include <llvm/ADT/BitVector.h>
 #include <llvm/ADT/DenseSet.h>
 #include <llvm/Support/raw_ostream.h>
@@ -23,6 +23,41 @@ using namespace llvm;
 namespace {
 
 class DefinitionPass : public FunctionPass {
+private:
+    ValueMap<Value*, int>  valueMap;
+
+    void calculateOUT(BasicBlock &bb){
+        int flag = 0;
+        for(Instruction &i : bb){
+            if( AllocaInst* ai = dynamic_cast<AllocaInst*>(&i) ){
+                errs() << "======Allocate=======" << '\n';
+                ai->print(errs());
+                errs() << "\nName: "<< ai->getName() << '\n';
+                std::pair<Value*, int> tmp = std::pair<Value*, int>(ai, 9);
+                valueMap.insert(tmp);
+            }
+            else if( StoreInst* si = dynamic_cast<StoreInst*>(&i) ){
+                errs() << "======Store=======" << '\n';
+                si->print(errs());
+                errs() << "\nOperand: "<< *(si->getPointerOperand()) << '\n';
+                errs() << "Operand Name: "<< si->getPointerOperand()->getName() << '\n';
+                std::pair<Value*, int> tmp = std::pair<Value*, int>(si->getPointerOperand(), 1);
+                valueMap.erase(si->getPointerOperand());
+                valueMap.insert(tmp);
+            }
+            else if( LoadInst* li = dynamic_cast<LoadInst*>(&i) ){
+                errs() << "======Load=======" << '\n';
+                li->print(errs());
+                errs() << "\nOperand: "<< *(li->getPointerOperand()) << '\n';
+                errs() << "Operand Name: "<< li->getPointerOperand()->getName() << '\n';
+                errs() << "Lookup Value: " << valueMap.lookup(li->getPointerOperand()) << '\n' << "Size: " << valueMap.size() << '\n';
+
+            }
+            else{
+
+            }
+        }
+    }
 public:
   static char ID;
   DefinitionPass() : FunctionPass(ID) {}

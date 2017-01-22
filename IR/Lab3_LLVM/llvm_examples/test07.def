@@ -1,0 +1,9 @@
+Variable b may be uninitialized on line 10
+Variable b may be uninitialized on line 10
+Variable y may be uninitialized on line 11
+Variable b may be uninitialized on line 12
+Variable y may be uninitialized on line 13
+Variable b may be uninitialized on line 13
+Variable x may be uninitialized on line 16
+Variable y may be uninitialized on line 16
+Variable b may be uninitialized on line 16
