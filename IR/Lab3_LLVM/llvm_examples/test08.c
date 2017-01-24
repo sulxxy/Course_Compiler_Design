@@ -9,7 +9,7 @@ int main()
     int a, b, c, d, e;
     float f;
     double g;
-
+    
     if(a > 100){
         a = 10;
     }
@@ -18,7 +18,7 @@ int main()
         b = 20;
     }
 
-    e = e*100;
+    e = e*100;    
     d = c*2;
 
     for (int i = 0; i < a; i++)
@@ -30,8 +30,8 @@ int main()
             g = 500.0;
         }
     }
-
+    
     printf("%d %d %d %d %d %f %f\n", a, b, c, d, e, f, g);
-
+    
     return 0;
-}
+} 

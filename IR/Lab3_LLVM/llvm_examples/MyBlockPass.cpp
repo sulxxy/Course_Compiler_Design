@@ -6,6 +6,7 @@
  */
 
 #include <llvm/IR/Type.h>
+#include <llvm/IR/Function.h>
 #include <llvm/Pass.h>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/Support/raw_ostream.h>
@@ -41,6 +42,13 @@ public:
           i.print(errs());
           if(AllocaInst* ai = dynamic_cast< AllocaInst* >(&i)){
               errs() << "\nVN:  " << ai->getName() << '\n';
+          }
+          if(CallInst* ci = dynamic_cast< CallInst* >(&i)){
+              errs() << "\nParaName0:  " << ci->getAttributes().getAsString(0) << '\n';
+              for(ArrayRef< Attribute >::iterator i = ci->getAttributes().begin(5); i != ci->getAttributes().end(5); i++){
+              errs() << "\nParaName1:  " << i << '\n';
+              }
+              errs() << "\nFuncName:  " << ci->getCalledFunction()->getName() << '\n';
           }
           if(StoreInst* si = dynamic_cast< StoreInst* >(&i)){
               if(si->getPointerOperand()->getName() == ""){

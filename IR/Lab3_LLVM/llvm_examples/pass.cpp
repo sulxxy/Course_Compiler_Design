@@ -368,12 +368,15 @@ namespace {
                 au.setPreservesCFG();
             }
 
+            /*Solution 1: when detecting allocaInst, insert storeInst after it immediately*/
+            /*However, cannot pass test08, when run it, there'll be segment fault error*/
+
             virtual bool runOnFunction(Function &F) {
                 // TODO
                 for(BasicBlock& bb : F){
                     for(Instruction &i : bb.getInstList()){
                         if(AllocaInst* ai = dynamic_cast<AllocaInst*>(&i)){
-                            /*new StoreInst() here and insert it immediately*/
+                            //new StoreInst() here and insert it immediately
                             Type* cur_type = ai->getAllocatedType();
                             StoreInst* store_instruction = NULL;
                             if(ai->getName() != ""){
@@ -409,6 +412,78 @@ namespace {
                 // The function was modified
                 return true;
             }
+
+
+            /* Solution 2: insert StoreInst before LoadInst*/
+            typedef struct{
+                Type* cur_type;
+                bool isInitialized;
+            }VariableStatus;
+
+            /*virtual bool runOnFunction(Function &F) {
+                //std::set<StringRef> initialized_variables_in_current_function;
+                std::map<StringRef, VariableStatus*> variable_status_in_current_function;
+
+                for(BasicBlock &bb : F){
+                    for(Instruction& i : bb){
+                        if(AllocaInst * ai = dynamic_cast<AllocaInst*> (&i)){
+                            StringRef variable_name = ai->getName();
+                            if(variable_name != ""){
+                                VariableStatus* variable_status = new VariableStatus;
+                                variable_status->cur_type = ai->getAllocatedType();
+                                variable_status->isInitialized = false;
+                                variable_status_in_current_function.insert(std::pair<StringRef, VariableStatus*>(variable_name, variable_status));
+                            }
+                        }
+                        else if(StoreInst * si = dynamic_cast<StoreInst*> (&i)){
+                            StringRef variable_name = si->getPointerOperand()->getName();
+                            if(variable_name != ""){
+                                if(variable_status_in_current_function.find(variable_name) != variable_status_in_current_function.end()){
+                                    variable_status_in_current_function.find(variable_name)->second->isInitialized = true;
+                                }
+                            }
+                        }
+                        else if(LoadInst * li = dynamic_cast<LoadInst*> (&i)){
+                            StringRef variable_name = li->getPointerOperand()->getName();
+                            if(variable_name != ""){
+                                std::map<StringRef, VariableStatus*>::iterator current_variable_status = variable_status_in_current_function.find(variable_name);
+                                if(current_variable_status != variable_status_in_current_function.end()){
+                                    if(current_variable_status->second->isInitialized == false){
+                                        StoreInst* store_instruction = NULL;
+                                        Type* cur_type = current_variable_status->second->cur_type;
+                                        if(cur_type->isIntegerTy()){
+                                            llvm::APInt tmp(32, 10);
+                                            Value* val = ConstantInt::get(F.getContext(),tmp);
+                                            store_instruction = new StoreInst(val, li->getPointerOperand(), false, 4);
+                                            store_instruction->insertBefore(li);
+                                        }
+                                        else if(cur_type->isFloatTy()){
+                                            llvm::APFloat tmp(20.0f);
+                                            Value* val = ConstantFP::get(F.getContext(), tmp);
+                                            store_instruction = new StoreInst(val, li->getPointerOperand());
+                                            store_instruction->insertBefore(li);
+
+                                        }
+                                        else if(cur_type->isDoubleTy()){
+                                            llvm::APFloat tmp(30.0);
+                                            Value* val = ConstantFP::get(F.getContext(), tmp);
+                                            store_instruction = new StoreInst(val, li->getPointerOperand());
+                                            store_instruction->insertBefore(li);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    errs() << "\n==========Debug===========\n";
+                    for(std::map<StringRef,VariableStatus*>::iterator i = variable_status_in_current_function.begin(); i != variable_status_in_current_function.end(); i++){
+                    errs() << i->first << '\n';
+                    }
+                }
+                return true;
+            }*/
+
+
     };
 
 } // namespace
