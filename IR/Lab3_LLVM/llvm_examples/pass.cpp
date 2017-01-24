@@ -128,6 +128,7 @@ namespace {
 
     class DefinitionPass : public FunctionPass {
         private:
+            std::set<StringRef> variables_in_current_block;
             ValueMap<BasicBlock*, DataFlowSets*> basicblock_dataflow_sets_map ;
             ValueMap<BasicBlock*, int*> visited_times_for_each_bb;
             //ValueMap<StoreInst*, int>  value_index_map;
@@ -196,16 +197,19 @@ namespace {
                     }
                 }
 
+                variables_in_current_block.clear();
                 for(BasicBlock &BB : F){
                     //errs() << basicblock_dataflow_sets_map.lookup(&BB)->asString() << '\n';
+                    std::vector<StoreInst*> definitions_locally;
                     BitVector sets_of_current_basicblock = *(basicblock_dataflow_sets_map.lookup(&BB)->getIN());
-                    sets_of_current_basicblock |= *(basicblock_dataflow_sets_map.lookup(&BB)->getGEN());
+                    BitVector GEN_in_current_block(MAX_DEF_CNT);
+                    //sets_of_current_basicblock |= *(basicblock_dataflow_sets_map.lookup(&BB)->getGEN());
                     /*if(sets_of_current_basicblock.none()){
                         sets_of_current_basicblock = *(basicblock_dataflow_sets_map.lookup(&BB)->getGEN());
                     }*/
                     for(Instruction &i : BB){
                         if( LoadInst* li = dynamic_cast<LoadInst*>(&i) ){
-                            int j = 0;
+                            int j = 0, k = 0;
                             for(j = 0; j < sets_of_current_basicblock.size(); j++){
                                 if(1 == sets_of_current_basicblock[j]){
                                     if(definitions_globally.at(j-1)->getPointerOperand()->getName() ==li->getPointerOperand()->getName()){
@@ -215,10 +219,31 @@ namespace {
                                 }
                             }
                             if(j == sets_of_current_basicblock.size()){
-                                errs() << "Variable " << li->getPointerOperand()->getName() << "  may be uninitialized on line " << i.getDebugLoc().getLine() << '\n';
+                                for(j = 0; j < GEN_in_current_block.size(); j++){
+                                    if(1 == GEN_in_current_block[j]){
+                                        if(definitions_locally.at(j-1)->getPointerOperand()->getName() ==li->getPointerOperand()->getName()){
+                                            //errs() << '\n' << li->getPointerOperand()->getName() << "  initialized\n" ;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if(j == GEN_in_current_block.size())
+                                    errs() << "Variable " << li->getPointerOperand()->getName() << " may be uninitialized on line " << i.getDebugLoc().getLine() << '\n';
                             }
                         }
-
+                        else if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
+                            if(si->getPointerOperand()->getName() != ""){
+                                if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
+                                    //definitions_globally.push_back(si);
+                                    //dataflow_sets->setGEN(definitions_globally.size() ,1);
+                                }
+                                else{
+                                    variables_in_current_block.insert(si->getPointerOperand()->getName());
+                                    definitions_locally.push_back(si);
+                                    GEN_in_current_block[definitions_locally.size()] = 1;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -228,7 +253,6 @@ namespace {
             return false;
             }
 
-            std::set<StringRef> variables_in_current_block;
             DataFlowSets* calculateDataFlowSets(BasicBlock &bb){
                 DataFlowSets* dataflow_sets = new DataFlowSets();
                 //std::vector<StoreInst*> definitions_in_current_block;
