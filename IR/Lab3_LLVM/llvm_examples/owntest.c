@@ -1,7 +1,7 @@
-int main(){
+void fun(int a){
     int i;
     int j;
-    j = i + 1;
+    j = a + 1;
     i = 0;
-    return 0;
+    return ;
 }

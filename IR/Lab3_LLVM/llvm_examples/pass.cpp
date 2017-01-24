@@ -198,6 +198,10 @@ namespace {
                 }
 
                 variables_in_current_block.clear();
+                std::set<StringRef> func_arguments;
+                for(Argument& a: F.getArgumentList()){
+                    func_arguments.insert(a.getName());
+                }
                 for(BasicBlock &BB : F){
                     //errs() << basicblock_dataflow_sets_map.lookup(&BB)->asString() << '\n';
                     std::vector<StoreInst*> definitions_locally;
@@ -210,6 +214,7 @@ namespace {
                     for(Instruction &i : BB){
                         if( LoadInst* li = dynamic_cast<LoadInst*>(&i) ){
                             int j = 0, k = 0;
+                            /* find defintions in IN */
                             for(j = 0; j < sets_of_current_basicblock.size(); j++){
                                 if(1 == sets_of_current_basicblock[j]){
                                     if(definitions_globally.at(j-1)->getPointerOperand()->getName() ==li->getPointerOperand()->getName()){
@@ -218,6 +223,7 @@ namespace {
                                     }
                                 }
                             }
+                            /* If not found, find defintion in current real-time gen */
                             if(j == sets_of_current_basicblock.size()){
                                 for(j = 0; j < GEN_in_current_block.size(); j++){
                                     if(1 == GEN_in_current_block[j]){
@@ -227,12 +233,23 @@ namespace {
                                         }
                                     }
                                 }
-                                if(j == GEN_in_current_block.size())
-                                    errs() << "Variable " << li->getPointerOperand()->getName() << " may be uninitialized on line " << i.getDebugLoc().getLine() << '\n';
+                                /* if still not found, find definition in argument list*/
+                                if(j == GEN_in_current_block.size()){
+                                    if(func_arguments.find(li->getPointerOperand()->getName()) != func_arguments.end()){
+                                        //find
+                                        //errs() << "\n ==== Find Arg ===\n";
+                                    }
+                                    else{
+                                        //errs() << "\n ==== Not Find Arg ===\n" << func_arguments.size() << ;
+                                        errs() << "Variable " << li->getPointerOperand()->getName() << " may be uninitialized on line " << i.getDebugLoc().getLine() << '\n';
+                                    }
+                                }
+
                             }
                         }
+                        /* generate current GEN in real-time*/
                         else if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
-                            if(si->getPointerOperand()->getName() != ""){
+                            //if(si->getPointerOperand()->getName() != ""){
                                 if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
                                     //definitions_globally.push_back(si);
                                     //dataflow_sets->setGEN(definitions_globally.size() ,1);
@@ -242,7 +259,7 @@ namespace {
                                     definitions_locally.push_back(si);
                                     GEN_in_current_block[definitions_locally.size()] = 1;
                                 }
-                            }
+                            //}
                         }
                     }
                 }

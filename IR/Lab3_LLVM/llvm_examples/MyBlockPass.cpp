@@ -39,6 +39,15 @@ public:
           errs() << "--------------------\n";
           errs() << "Line Number: " << i.getDebugLoc().getLine() << '\n';
           i.print(errs());
+          if(AllocaInst* ai = dynamic_cast< AllocaInst* >(&i)){
+              errs() << "\nVN:  " << ai->getName() << '\n';
+          }
+          if(StoreInst* si = dynamic_cast< StoreInst* >(&i)){
+              if(si->getPointerOperand()->getName() == ""){
+                  errs() << "\n=========empty==========\n";
+              }
+              errs() << "\nVN:  " << si->getPointerOperand()->getName() << '\n';
+          }
           errs() << '\n';
           errs() << " - "<< i.getOpcodeName() << " : ";
           Type *type = i.getType();
