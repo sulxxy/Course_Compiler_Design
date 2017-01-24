@@ -19,6 +19,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/SymbolTableListTraits.h>
+#include <llvm/IR/Type.h>
 
 #include <sstream>
 #include <vector>
@@ -369,7 +370,42 @@ namespace {
 
             virtual bool runOnFunction(Function &F) {
                 // TODO
+                for(BasicBlock& bb : F){
+                    for(Instruction &i : bb.getInstList()){
+                        if(AllocaInst* ai = dynamic_cast<AllocaInst*>(&i)){
+                            /*new StoreInst() here and insert it immediately*/
+                            Type* cur_type = ai->getAllocatedType();
+                            StoreInst* store_instruction = NULL;
+                            if(ai->getName() != ""){
+                                if(cur_type->isIntegerTy()){
+                                    //IntegerType* int_type = IntegerType::get(F.getContext(), 32);
+                                    llvm::APInt tmp(32, 10);
+                                    Value* val = ConstantInt::get(F.getContext(),tmp);
+                                    store_instruction = new StoreInst(val, &i, false, 4);
+                                    store_instruction->insertAfter(ai);
+                                }
+                                else if(cur_type->isFloatTy()){
+                                    //FloatType* int_type = FloatType::get(F.getContext(), 32);
+                                    //AllocaInst* ata = new AllocaInst(int_type, 0, &i);
+                                    llvm::APFloat tmp(20.0f);
+                                    Value* val = ConstantFP::get(F.getContext(), tmp);
+                                    store_instruction = new StoreInst(val, &i);
+                                    store_instruction->insertAfter(ai);
 
+                                }
+                                else if(cur_type->isDoubleTy()){
+                                    //FloatType* int_type = FloatType::get(F.getContext(), 32);
+                                    //AllocaInst* ata = new AllocaInst(int_type, 0, &i);
+                                    llvm::APFloat tmp(30.0);
+                                    Value* val = ConstantFP::get(F.getContext(), tmp);
+                                    store_instruction = new StoreInst(val, &i);
+                                    store_instruction->insertAfter(ai);
+                                }
+
+                            }
+                        }
+                    }
+                }
                 // The function was modified
                 return true;
             }
@@ -379,8 +415,8 @@ namespace {
 
 
 char DefinitionPass::ID = 0;
-//char FixingPass::ID = 1;
+char FixingPass::ID = 1;
 
 // Pass registrations
 static RegisterPass<DefinitionPass> X("def-pass", "Uninitialized variable pass");
-//static RegisterPass<FixingPass> Y("fix-pass", "Fixing initialization pass");
+static RegisterPass<FixingPass> Y("fix-pass", "Fixing initialization pass");
