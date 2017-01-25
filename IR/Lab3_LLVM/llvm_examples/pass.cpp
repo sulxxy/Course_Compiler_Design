@@ -13,7 +13,7 @@
 #include <llvm/Analysis/CFG.h>
 //#include <llvm/IR/InstIterator.h>
 #include <llvm/IR/Constants.h>
-#include <llvm/ADT/ValueMap.h>
+#include <llvm/IR/ValueMap.h>
 #include <llvm/ADT/BitVector.h>
 #include <llvm/ADT/DenseSet.h>
 #include <llvm/Support/raw_ostream.h>
@@ -149,16 +149,6 @@ namespace {
                     DataFlowSets* dataflow_sets_in_current_basicblock = calculateDataFlowSets(BB);
                     basicblock_dataflow_sets_map.insert(std::pair<BasicBlock*, DataFlowSets*>(&BB, dataflow_sets_in_current_basicblock));
                     visited_times_for_each_bb.insert(std::pair<BasicBlock*, int*>(&BB, new int(0)));
-                    /*for (Instruction &I : BB) {
-                        if (StoreInst *SI = dyn_cast<StoreInst>(&I)) {
-                            Value *PtrOp = SI->getPointerOperand(); // Store target
-                            if (PtrOp->hasName()) {
-                                DebugLoc Loc = SI->getDebugLoc();
-                                errs() << "Variable " << PtrOp->getName()
-                                    << " written on line " << Loc.getLine() << "\n";
-                            }
-                        }
-                    }*/
                 }
                 bool change = true;
                 while(change){
@@ -208,10 +198,6 @@ namespace {
                     std::vector<StoreInst*> definitions_locally;
                     BitVector sets_of_current_basicblock = *(basicblock_dataflow_sets_map.lookup(&BB)->getIN());
                     BitVector GEN_in_current_block(MAX_DEF_CNT);
-                    //sets_of_current_basicblock |= *(basicblock_dataflow_sets_map.lookup(&BB)->getGEN());
-                    /*if(sets_of_current_basicblock.none()){
-                        sets_of_current_basicblock = *(basicblock_dataflow_sets_map.lookup(&BB)->getGEN());
-                    }*/
                     for(Instruction &i : BB){
                         if( LoadInst* li = dynamic_cast<LoadInst*>(&i) ){
                             int j = 0, k = 0;
@@ -250,7 +236,7 @@ namespace {
                         }
                         /* generate current GEN in real-time*/
                         else if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
-                            //if(si->getPointerOperand()->getName() != ""){
+                            if(si->getPointerOperand()->getName() != ""){
                                 if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
                                     //definitions_globally.push_back(si);
                                     //dataflow_sets->setGEN(definitions_globally.size() ,1);
@@ -260,7 +246,7 @@ namespace {
                                     definitions_locally.push_back(si);
                                     GEN_in_current_block[definitions_locally.size()] = 1;
                                 }
-                            //}
+                            }
                         }
                     }
                 }
@@ -273,21 +259,13 @@ namespace {
 
             DataFlowSets* calculateDataFlowSets(BasicBlock &bb){
                 DataFlowSets* dataflow_sets = new DataFlowSets();
-                //std::vector<StoreInst*> definitions_in_current_block;
-                int initialization_index = 0;
+                int initialization_index = 0; /* DISCARD */
 
                 // traverse to calculate GEN KILL
                 for(Instruction &i : bb){
-                    if( AllocaInst* ai = dynamic_cast<AllocaInst*>(&i) ){
-                        /*errs() << "======Allocate=======" << '\n';
-                        ai->print(errs());
-                        errs() << "\nName: "<< ai->getName() << '\n';
-                        std::pair<Value*, int> tmp = std::pair<Value*, int>(ai, 9);
-                        valueMap.insert(tmp);*/
-                    }
-                    else if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
+                    if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
                             //if(initialization_index != -1){
-                            if(si->getPointerOperand()->getName() != ""){
+                        if(si->getPointerOperand()->getName() != ""){
                             /*errs() << "======Store=======" << '\n';
                             si->print(errs());
                             errs() << "\nOperand: "<< *(si->getPointerOperand()) << '\n';
@@ -300,17 +278,6 @@ namespace {
 
                             /*remove former definitions on the same variable, which is downward exposed*/
                             /*TODO: There's a !BUG! here: the function initializationIndexWhenLoading() can only return the index of the first item. However, when there're 2 more definitions, the function cannot run successfully.*/
-                            /*if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
-                                int index = initializationIndexWhenLoading(definitions_in_current_block, si->getPointerOperand());
-                                dataflow_sets->setGEN(definitions_globally.size() + index + 1, 0);
-                                definitions_in_current_block.push_back(si);
-                                dataflow_sets->setGEN(definitions_globally.size() + definitions_in_current_block.size(),1);
-                            }
-                            else{
-                                variables_in_current_block.insert(si->getPointerOperand()->getName());
-                                definitions_in_current_block.push_back(si);
-                                dataflow_sets->setGEN(definitions_globally.size() + definitions_in_current_block.size(),1);
-                            }*/
                             if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
                                 int index = initializationIndexWhenLoading(definitions_globally, si->getPointerOperand());
                                 dataflow_sets->setGEN(index + 1, 1);
@@ -325,20 +292,15 @@ namespace {
                         }
                         initialization_index = 0;
                     }
+                    /* DISCARD: when loading, we need to ensure the loading variable has been defined. That is to say, the loading variable should have been stored in the definitions_in_current_block*/
                     else if( LoadInst* li = dynamic_cast<LoadInst*>(&i) ){
-                        /*errs() << "======Load=======" << '\n';
-                        li->print(errs());
-                        errs() << "\nOperand: "<< *(li->getPointerOperand()) << '\n';
-                        errs() << "Operand Name: "<< li->getPointerOperand()->getName() << '\n';
-                        errs() << "Lookup Value: " << valueMap.lookup(li->getPointerOperand()) << '\n' << "Size: " << valueMap.size() << '\n';*/
-
-                        /*when loading, we need to ensure the loading variable has been defined. That is to say, the loading variable should have been stored in the definitions_in_current_block*/
                         //initialization_index = initializationIndexWhenLoading(definitions_in_current_block, li->getPointerOperand());
                         //initialization_index = initializationIndexWhenLoading(definitions_globally, li->getPointerOperand());
 
                     }
                 }
 
+                /* DISCARD */
                 /*for(std::vector<StoreInst*>::iterator i = definitions_in_current_block.begin(), e = definitions_in_current_block.end(); i !=e; i++){
                     definitions_globally.push_back(*i);
                 }*/
@@ -369,8 +331,8 @@ namespace {
             }
 
             /*Solution 1: when detecting allocaInst, insert storeInst after it immediately*/
-            /*However, cannot pass test08, when run it, there'll be segment fault error*/
-
+            /*DISCARD:  BUG: However, cannot pass test08, when run it, there'll be segment fault error*/
+            /* this bug has been solved, the reason is I use llvm version 3.4 before. After updated to 3.5, everything is well done. */
             virtual bool runOnFunction(Function &F) {
                 // TODO
                 for(BasicBlock& bb : F){
@@ -381,15 +343,12 @@ namespace {
                             StoreInst* store_instruction = NULL;
                             if(ai->getName() != ""){
                                 if(cur_type->isIntegerTy()){
-                                    //IntegerType* int_type = IntegerType::get(F.getContext(), 32);
                                     llvm::APInt tmp(32, 10);
                                     Value* val = ConstantInt::get(F.getContext(),tmp);
                                     store_instruction = new StoreInst(val, &i, false, 4);
                                     store_instruction->insertAfter(ai);
                                 }
                                 else if(cur_type->isFloatTy()){
-                                    //FloatType* int_type = FloatType::get(F.getContext(), 32);
-                                    //AllocaInst* ata = new AllocaInst(int_type, 0, &i);
                                     llvm::APFloat tmp(20.0f);
                                     Value* val = ConstantFP::get(F.getContext(), tmp);
                                     store_instruction = new StoreInst(val, &i);
@@ -397,8 +356,6 @@ namespace {
 
                                 }
                                 else if(cur_type->isDoubleTy()){
-                                    //FloatType* int_type = FloatType::get(F.getContext(), 32);
-                                    //AllocaInst* ata = new AllocaInst(int_type, 0, &i);
                                     llvm::APFloat tmp(30.0);
                                     Value* val = ConstantFP::get(F.getContext(), tmp);
                                     store_instruction = new StoreInst(val, &i);
@@ -415,12 +372,13 @@ namespace {
 
 
             /* Solution 2: insert StoreInst before LoadInst*/
-            typedef struct{
+            /* DISCARD: set up StoreInst just only one instruction before LoadInst is not enough in some cases, e.g. while() statement */
+            /*typedef struct{
                 Type* cur_type;
                 bool isInitialized;
             }VariableStatus;
 
-            /*virtual bool runOnFunction(Function &F) {
+            virtual bool runOnFunction(Function &F) {
                 //std::set<StringRef> initialized_variables_in_current_function;
                 std::map<StringRef, VariableStatus*> variable_status_in_current_function;
 
