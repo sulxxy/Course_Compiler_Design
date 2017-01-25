@@ -1,4 +1,4 @@
-git add .
+git add -A .
 if [ $# -lt 1 ]; then
 	git commit -a --allow-empty-message -m ""
 else
