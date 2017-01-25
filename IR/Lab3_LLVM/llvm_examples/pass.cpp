@@ -236,7 +236,7 @@ namespace {
                         }
                         /* generate current GEN in real-time*/
                         else if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
-                            if(si->getPointerOperand()->getName() != ""){
+                            //if(si->getPointerOperand()->getName() != ""){
                                 if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
                                     //definitions_globally.push_back(si);
                                     //dataflow_sets->setGEN(definitions_globally.size() ,1);
@@ -246,7 +246,7 @@ namespace {
                                     definitions_locally.push_back(si);
                                     GEN_in_current_block[definitions_locally.size()] = 1;
                                 }
-                            }
+                            //}
                         }
                     }
                 }
