@@ -1,0 +1,20 @@
+  %1 = add nsw i32 2, 3
+    -> const i32 5
+  %2 = icmp slt i32 2, 3
+    -> const i1 true
+  %3 = zext i1 %2 to i32
+    -> const i32 1
+  %4 = sitofp i32 2 to float
+    -> const float 2.000000e+00
+  %5 = sitofp i32 2 to float
+    -> const float 2.000000e+00
+  %6 = fmul float %5, 0x40091EB860000000
+    -> const float 0x40191EB860000000
+  %7 = fpext float %4 to double
+    -> const double 2.000000e+00
+  %8 = fpext float %6 to double
+    -> const double 0x40191EB860000000
+  %9 = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([13 x i8]* @.str, i32 0, i32 0), i32 %1, i32 %3, double %7, double %8)
+    -> overdefined
+  ret i32 0
+    -> overdefined
