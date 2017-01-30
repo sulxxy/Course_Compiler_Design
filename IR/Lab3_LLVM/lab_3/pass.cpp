@@ -1,8 +1,17 @@
-/* First-Name Last-Name Matr-No */
+/* Jiawen Wang 387557
+ * Shaolei Wang 387561
+ * Zhiwei Liu 387571 */
 
-/* TODO: Add a short explanation of your algorithm here.
- * E.g., if you use iterative data-flow analysis, write down
- * the used gen/kill sets and flow-equations here. */
+/* Simple explanation:
+ * 1. I used the worklist algorithm, that is, when dectecting changes, keep the current loop.
+ * 2. GEN sets are the new definitions in current basicblock; I don't use KILL sets so I don't calculate it;
+ * 3. Current basicblock's IN sets are the intersection set of the OUT sets from all its previous nodes which has been visited. If there's a basicblock  has not been visited, we don't think it is the current basicblock's previous node while calculating. The reason is, all of the 4 sets in an unvisited node are empty, after intersection with others, everything will be empty.
+ * 4. Current basicblock's OUT sets are the union of GEN set and IN set.
+ * Algorithm process:
+ * 3 loops:
+ * first loop: calculate the GEN sets of every basicblock using the method calculateDataFlowSets().
+ * second loop: calculate the IN and OUT sets of every basicblock  using worklist algorithm.
+ * third loop: go through the source code block by block, find the uses before definition. */
 
 // Include some headers that might be useful
 #include <llvm/Pass.h>
@@ -25,7 +34,7 @@
 #include <vector>
 #include <set>
 
-const int MAX_DEF_CNT = 10;
+const int MAX_DEF_CNT = 100;
 
 using namespace llvm;
 
@@ -105,6 +114,7 @@ namespace {
                 *KILL = bv;
             }
 
+            //for debug
             std::string asString(){
                 std::stringstream ss;
                 ss << "\nGEN: " << std::endl;
@@ -144,7 +154,6 @@ namespace {
             }
 
             virtual bool runOnFunction(Function &F) {
-            // Example: Print all stores and where they occur
                 for (BasicBlock &BB : F) {
                     DataFlowSets* dataflow_sets_in_current_basicblock = calculateDataFlowSets(BB);
                     basicblock_dataflow_sets_map.insert(std::pair<BasicBlock*, DataFlowSets*>(&BB, dataflow_sets_in_current_basicblock));
@@ -222,12 +231,8 @@ namespace {
                                 }
                                 /* if still not found, find definition in argument list*/
                                 if(j == GEN_in_current_block.size()){
-                                    if(func_arguments.find(li->getPointerOperand()->getName()) != func_arguments.end()){
-                                        //find
-                                        //errs() << "\n ==== Find Arg ===\n";
-                                    }
-                                    else{
-                                        //errs() << "\n ==== Not Find Arg ===\n" << func_arguments.size() << ;
+                                    if(func_arguments.find(li->getPointerOperand()->getName()) == func_arguments.end()){
+                                        //not find
                                         errs() << "Variable " << li->getPointerOperand()->getName() << " may be uninitialized on line " << i.getDebugLoc().getLine() << '\n';
                                     }
                                 }
@@ -237,11 +242,9 @@ namespace {
                         /* generate current GEN in real-time*/
                         else if(StoreInst* si = dynamic_cast<StoreInst*>(&i)){
                             //if(si->getPointerOperand()->getName() != ""){
-                                if(variables_in_current_block.find(si->getPointerOperand()->getName()) != variables_in_current_block.end()){
+                                if(variables_in_current_block.find(si->getPointerOperand()->getName()) == variables_in_current_block.end()){
                                     //definitions_globally.push_back(si);
                                     //dataflow_sets->setGEN(definitions_globally.size() ,1);
-                                }
-                                else{
                                     variables_in_current_block.insert(si->getPointerOperand()->getName());
                                     definitions_locally.push_back(si);
                                     GEN_in_current_block[definitions_locally.size()] = 1;
@@ -292,12 +295,12 @@ namespace {
                         }
                         initialization_index = 0;
                     }
-                    /* DISCARD: when loading, we need to ensure the loading variable has been defined. That is to say, the loading variable should have been stored in the definitions_in_current_block*/
+                    /* DISCARD: when loading, we need to ensure the loading variable has been defined. That is to say, the loading variable should have been stored in the definitions_in_current_block. However, as I see from the test cases, we don't have to do that here.
                     else if( LoadInst* li = dynamic_cast<LoadInst*>(&i) ){
-                        //initialization_index = initializationIndexWhenLoading(definitions_in_current_block, li->getPointerOperand());
-                        //initialization_index = initializationIndexWhenLoading(definitions_globally, li->getPointerOperand());
+                        initialization_index = initializationIndexWhenLoading(definitions_in_current_block, li->getPointerOperand());
+                        initialization_index = initializationIndexWhenLoading(definitions_globally, li->getPointerOperand());
 
-                    }
+                    }*/
                 }
 
                 /* DISCARD */
