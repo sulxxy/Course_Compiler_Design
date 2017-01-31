@@ -1,7 +1,3 @@
-/* Jiawen Wang 387557
- * Shaolei Wang 387561
- * Zhiwei Liu 387571 */
-
 /* Simple explanation:
  * 1. I used the worklist algorithm, that is, when dectecting changes, keep the current loop.
  * 2. GEN sets are the new definitions in current basicblock; I don't use KILL sets so I don't calculate it;
