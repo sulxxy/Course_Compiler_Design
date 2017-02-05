@@ -1,9 +1,3 @@
-/* Group Number: AB */
-/* Group Members:
- * Jiawen Wang  387557
- * Shaolei Wang 387561
- * Zhiwei Liu   387571
- */
 %{
 #include <stdio.h>
 #include <string.h>

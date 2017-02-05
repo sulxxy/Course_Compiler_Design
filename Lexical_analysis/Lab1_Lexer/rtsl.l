@@ -1,10 +1,4 @@
 /* Exercise 1: Lexical Analysis*/
-/* Group Number: AB */
-/* Group Members:
- * Jiawen Wang  387557
- * Shaolei Wang 387561
- * Zhiwei Liu   387571
- */
 %option noyywrap
 %{
 #include <stdio.h>
