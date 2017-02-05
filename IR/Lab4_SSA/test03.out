@@ -1,0 +1,28 @@
+  %1 = icmp ne i32 %pred, 0
+    -> undefined
+  br i1 %1, label %2, label %5
+    -> undefined
+  %3 = add nsw i32 1, 1
+    -> undefined
+  %4 = sub nsw i32 1, 1
+    -> undefined
+  br label %8
+    -> undefined
+  %6 = sub nsw i32 3, 1
+    -> undefined
+  %7 = add nsw i32 3, 1
+    -> undefined
+  br label %8
+    -> undefined
+  %k.0 = phi i32 [ %3, %2 ], [ %6, %5 ]
+    -> undefined
+  %l.0 = phi i32 [ %4, %2 ], [ %7, %5 ]
+    -> undefined
+  %9 = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([7 x i8]* @.str, i32 0, i32 0), i32 %k.0, i32 %l.0)
+    -> undefined
+  ret void
+    -> undefined
+  call void @test(i32 1)
+    -> undefined
+  ret i32 0
+    -> undefined

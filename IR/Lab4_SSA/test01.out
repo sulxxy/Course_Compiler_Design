@@ -1,0 +1,8 @@
+  %1 = add nsw i32 1, 1
+    -> undefined
+  %2 = add nsw i32 %1, 1
+    -> undefined
+  %3 = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([10 x i8]* @.str, i32 0, i32 0), i32 1, i32 %1, i32 %2)
+    -> undefined
+  ret i32 0
+    -> undefined
