@@ -13,8 +13,8 @@ int main() {
     int b = i < j;
     float c = (float) i;
     float d = i * k;
-
+    
     printf("%d %d %f %f\n", a, b, c, d);
-
+    
     return 0;
-}
+}  
