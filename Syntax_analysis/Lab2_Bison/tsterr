@@ -1,2 +1,0 @@
-RTSL.y: conflicts: 27 shift/reduce
-./compile.sh: line 4: 17319 Segmentation fault: 11  ./Parser.out $1
