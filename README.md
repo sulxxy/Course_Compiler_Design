@@ -1,4 +1,2 @@
-# ZCompiler
-This project will build a simple but practical compiler(I call it **ZCompiler**).
-
-All of the theory parts I have learned from the course `Compiler Design`(including lab units) are located in the branch [theory](https://github.com/sulxxy/ZCompiler/tree/theory) of this project.
+# Kaleidoscope
+This branch is used for learning to build a compiler for a toy language **kaleidoscope** step by step through the documents of [llvm](http://llvm.org/docs/tutorial/).
