@@ -13,8 +13,11 @@ class Token
 public:
   Token();
   Token(TokenType type, string text);
-  string toString();
-  TokenType getTokenType();
+  Token(const Token&);
+//  string toString();
+  TokenType getTokenType() const;
+  string getTokenText() const;
+  friend ostream& operator <<(ostream&, const Token&);
 private:
   TokenType m_tokenType;
   string m_text;

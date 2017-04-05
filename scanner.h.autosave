@@ -19,6 +19,7 @@ public:
   void eat();
   void match(char x);
   Token matchKeyword();
+  Token matchDigit();
   void skipWS();
   void unitTest();
 

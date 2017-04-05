@@ -6,29 +6,50 @@ enum TokenType {
   LITERAL,   /* e.g. "core dump" */
   NUMBER,
 
+  /* data types */
   BOOL,
   CHAR,
+  SHORT,
   VOID,
   INT,
   FLOAT,
   DOUBLE,
   UNSIGNED,
+  LONG,
 
-  COMPARISON, /* e.g. <, >, <=, !=, == */
 
+  /* binary operators */
   PLUS,
   MINUS,
   MUL,
   DIV,
   ASSIGN,
 
+  /* COMPARISON, e.g. <, >, <=, !=, == */
+  LE,   /* <= */
+  GE,   /* >= */
+  NE,   /* != */
+  LT,   /* < */
+  GT,   /* > */
+  EQ,   /* == */
+
+  /* keywords */
   IF,
   ELSE,
   WHEN,
+  DO,
+  WHILE,
   BREAK,
   SWITCH,
   CASE,
-  CLASS,
+  CONTINUE,
+  STRUCT,
+  ENUM,
+  EXTERN,
+  INLINE,
+  RETURN,
+
+//  CLASS,
 
   L_PARENTHESIS,  /* ( */
   R_PARENTHESIS,  /* ) */
@@ -37,11 +58,16 @@ enum TokenType {
   L_BRACE,  /* { */
   R_BRACE,  /* } */
 
+  /* punctuations */
   COMMA,  /* , */
   COLON,  /* : */
   SEMICOLON, /* ; */
 
-  EOF_TYPE
+  /* special */
+  EOF_TYPE,
+  WS,       /* white space, including \t, \n, \r */
+  STARTING_TYPE,
+  RESERVE
 };
 
 struct SymbolTable {

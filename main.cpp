@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "symboltable.h"
+#include "scanner.h"
+#include "parser.h"
+
 #include <QApplication>
 #include <iostream>
-#include <scanner.h>
 
 using namespace std;
 
@@ -17,12 +19,12 @@ int main(int argc, char *argv[])
   */
 
 
-  string s = ",.";
-  Scanner st(s);
-  Token t = st.nextToken();
-  while(t.getTokenType() != EOF_TYPE){
-    cout << t.toString() << endl;
-    t = st.nextToken();
-  }
+//  string s = "    sdf bool rt";
+//  Scanner st(s);
+//  st.unitTest();
+  cout << isdigit('c') << endl;
+  cout << isdigit('1') << endl;
+  //Parser pt(st);
+  //pt.print_expression();
   return 0;
 }
