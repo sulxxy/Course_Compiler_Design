@@ -6,7 +6,7 @@ Token::Token()
   m_text = "";
 }
 
-Token::Token(TokenType type, string text) : m_tokenType(type), m_text(text)
+Token::Token(TokenType type, string text, int value) : m_tokenType(type), m_text(text), m_value(value)
 {
 
 }

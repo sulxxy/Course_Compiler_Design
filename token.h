@@ -12,7 +12,7 @@ class Token
 {
 public:
   Token();
-  Token(TokenType type, string text);
+  Token(TokenType type, string text, int value=0);
   Token(const Token&);
 //  string toString();
   TokenType getTokenType() const;
@@ -21,6 +21,7 @@ public:
 private:
   TokenType m_tokenType;
   string m_text;
+  int m_value;      //TODO value type to be changed
 };
 
 #endif // TOKEN_H

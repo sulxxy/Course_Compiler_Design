@@ -232,9 +232,9 @@ Token Scanner::matchDigit() {
         do {
           buf << m_current_char;
           eat();
-        } while(isdigit(m_current_char) || m_current_char == '.');
-        string s = buf.str();
-
+        } while(isdigit(m_current_char) ); /* todo: support float point */
+        int scanned_value = stoi(buf.str());
+        return Token(NUMBER, buf.str(), scanned_value);
 }
 
 void Scanner::skipWS() {
