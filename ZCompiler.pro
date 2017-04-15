@@ -18,13 +18,15 @@ SOURCES += main.cpp\
     parser.cpp \
     generator.cpp \
     symboltable.cpp \
-    token.cpp
+    token.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     scanner.h \
     parser.h \
     generator.h \
     symboltable.h \
-    token.h
+    token.h \
+    utils.h
 
 FORMS    += mainwindow.ui

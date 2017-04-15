@@ -2,7 +2,7 @@
 #define SYMBOLTABLE_H
 
 enum TokenType {
-  ID = 1,    /* e.g. PI, name */
+  IDENTIFIER = 1,    /* e.g. PI, name */
   LITERAL,   /* e.g. "core dump" */
   NUMBER,
 

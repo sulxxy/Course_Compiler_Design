@@ -19,12 +19,10 @@ int main(int argc, char *argv[])
   */
 
 
-//  string s = "    sdf bool rt";
-//  Scanner st(s);
+  string s = "long a;";
+  Scanner st(s);
 //  st.unitTest();
-  cout << isdigit('c') << endl;
-  cout << isdigit('1') << endl;
-  //Parser pt(st);
-  //pt.print_expression();
+  Parser pt(st);
+  pt.declaration();
   return 0;
 }

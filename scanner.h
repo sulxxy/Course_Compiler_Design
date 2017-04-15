@@ -3,6 +3,7 @@
 
 #include <string>
 #include "token.h"
+#include "utils.h"
 
 using namespace std;
 

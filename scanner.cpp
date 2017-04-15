@@ -16,11 +16,12 @@ Scanner::Scanner(const Scanner& src)
 
 Token Scanner::nextToken()
 {
-  //while(m_current_char != EOF ){
+  while(m_current_char != EOF ){
     switch(m_current_char) {
     case ' ': case '\t': case '\n': case '\r':
       skipWS();
-      return Token(WS, "White Space");
+      break;
+      //return Token(WS, "White Space");
     case ',':
       eat();
       return Token(COMMA, ",");
@@ -109,7 +110,7 @@ Token Scanner::nextToken()
         return Token(RESERVE, "TODO LATER");
       }
     }
-  //}
+  }
 
 }
 
@@ -222,7 +223,7 @@ Token Scanner::matchKeyword(){
           return Token(RETURN, s);
         }
         else{
-          return Token(ID, s);
+          return Token(IDENTIFIER, s);
         }
 
 }
