@@ -38,10 +38,10 @@ public:
   //expression
   void expression();
   void arithmetic_expression();
-  void arithmetic_expression_1();
+  void arithmetic_expression_left_recursion_eliminated();
   void term();
-  void term_1();
-  void factor();
+  void term_left_recursion_eliminated();
+  void recursion();
   void empty();
 
   //block

@@ -95,21 +95,20 @@ void Parser::init_declarator_list()
   init_declarator();
   /* TODO: currently the parser can only parse the declaration with only 1 variable. What I'm missing is:
    * init_declarator_list -> init_declarator_list ',' init_declarator
-   * to do this, the left factor needs to be eliminated
+   * to do this, the left recursion needs to be eliminated
    */
 }
 
 void Parser::init_declarator()
 {
   declarator();
-  /*TODO*/
+  /*TODO: add initializer*/
 }
 
 void Parser::declarator()
 {
   direct_declarator();
   /*TODO*/
-
 }
 
 void Parser::direct_declarator()
@@ -152,15 +151,15 @@ void Parser::expression()
 
 void Parser::arithmetic_expression() {
   term();
-  arithmetic_expression_1();
+  arithmetic_expression_left_recursion_eliminated();
 }
 
-void Parser::arithmetic_expression_1() {
+void Parser::arithmetic_expression_left_recursion_eliminated() {
   switch(m_lookahead.getTokenType()){
   case PLUS: case MINUS:
     match(m_lookahead.getTokenType());
     term();
-    arithmetic_expression_1();
+    arithmetic_expression_left_recursion_eliminated();
     return ;
   default:
     empty();
@@ -169,16 +168,16 @@ void Parser::arithmetic_expression_1() {
 }
 
 void Parser::term() {
-  factor();
-  term_1();
+  recursion();
+  term_left_recursion_eliminated();
 }
 
-void Parser::term_1() {
+void Parser::term_left_recursion_eliminated() {
   switch(m_lookahead.getTokenType()){
   case MUL: case DIV:
     match(m_lookahead.getTokenType());
-    factor();
-    term_1();
+    recursion();
+    term_left_recursion_eliminated();
     return ;
   default:
     empty();
@@ -186,7 +185,7 @@ void Parser::term_1() {
   }
 }
 
-void Parser::factor() {
+void Parser::recursion() {
   switch(m_lookahead.getTokenType()){
   case L_PARENTHESIS:
     match(L_PARENTHESIS);
@@ -219,6 +218,7 @@ void Parser::block_item_list()
 
 }
 
+//function
 void Parser::function_definition()
 {
 
