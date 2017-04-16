@@ -28,6 +28,7 @@ public:
   //declaration
   void declaration();
   void init_declarator_list();
+  void init_declarator_list_left_recursion_eliminated();
   void init_declarator();
   void declarator();
   void direct_declarator();

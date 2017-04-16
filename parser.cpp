@@ -93,10 +93,19 @@ void Parser::declaration()
 void Parser::init_declarator_list()
 {
   init_declarator();
-  /* TODO: currently the parser can only parse the declaration with only 1 variable. What I'm missing is:
-   * init_declarator_list -> init_declarator_list ',' init_declarator
-   * to do this, the left recursion needs to be eliminated
-   */
+  init_declarator_list_left_recursion_eliminated();
+}
+
+void Parser::init_declarator_list_left_recursion_eliminated()
+{
+  if(m_lookahead.getTokenType() == COMMA){
+    match(COMMA);
+    init_declarator();
+    init_declarator_list_left_recursion_eliminated();
+  }
+  else{
+    empty();
+  }
 }
 
 void Parser::init_declarator()

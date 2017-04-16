@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   */
 
 
-  string s = "long a;";
+  string s = "long a,b,c;";
   Scanner st(s);
 //  st.unitTest();
   Parser pt(st);
