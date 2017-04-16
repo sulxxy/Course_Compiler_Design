@@ -4,7 +4,7 @@
 enum TokenType {
   IDENTIFIER = 1,    /* e.g. PI, name */
   LITERAL,   /* e.g. "core dump" */
-  NUMBER,
+  CONSTANT,
 
   /* data types */
   BOOL,
@@ -23,6 +23,8 @@ enum TokenType {
   MINUS,
   MUL,
   DIV,
+
+  /* assignment operator*/
   ASSIGN,
 
   /* COMPARISON, e.g. <, >, <=, !=, == */

@@ -35,7 +35,8 @@ void Parser::jump_statement()
 
 void Parser::expression_statement()
 {
-
+  expression();
+  match(SEMICOLON);
 }
 
 
@@ -55,7 +56,7 @@ void Parser::type_specifier()
       match(m_lookahead.getTokenType());
       return ;
     default:
-      LOG_ERR("type_specifier", m_lookahead.getTokenText());
+      LOG_ERR(__func__, "type_specifier", m_lookahead.getTokenText());
       return ;
   }
 
@@ -151,19 +152,156 @@ void Parser::translation_unit()
 
 }
 
+void Parser::initializer()
+{
+
+}
+
+void Parser::initializer_list()
+{
+
+}
+
+
+//operators
+void Parser::unary_operator()
+{
+  switch(m_lookahead.getTokenType()){
+  case MUL:case DIV: case PLUS: case MINUS:            /*TODO*/
+    match(m_lookahead.getTokenType());
+  default:
+    LOG_ERR(__func__, "unary operators", m_lookahead.getTokenText());
+  }
+
+}
+
+void Parser::assignment_operator()
+{
+  switch(m_lookahead.getTokenType()){
+  case ASSIGN:                             /*TODO: other assignment operators, e.g. += -= *= /= */
+    match(ASSIGN);
+    return;
+  default:
+    LOG_ERR(__func__, "Assignment", m_lookahead.getTokenText());
+  }
+
+}
 
 
 //expression
+void Parser::primary_expression()
+{
+  switch(m_lookahead.getTokenType()){
+  case IDENTIFIER: case CONSTANT: case LITERAL:
+    match(m_lookahead.getTokenType());
+    break;
+  case L_PARENTHESIS:
+    match(L_PARENTHESIS);
+    primary_expression();
+    match(R_PARENTHESIS);
+    break;
+  default:
+    LOG_ERR(__func__, "identifier/constant/literal/(", m_lookahead.getTokenText());
+  }
+}
+
+void Parser::postfix_expression()
+{
+  primary_expression();
+  /*TODO*/
+}
+
+void Parser::unary_expression()
+{
+  postfix_expression();
+  /*TODO others e.g. INC_OP unary_expression */
+
+}
+
+void Parser::cast_expression()
+{
+
+}
+
+void Parser::multiplicative_expression()
+{
+
+}
+
+void Parser::additive_expression()
+{
+
+}
+
+void Parser::shift_expression()
+{
+
+}
+
+void Parser::relational_expression()
+{
+
+}
+
+void Parser::equality_expression()
+{
+
+}
+
+void Parser::and_expression()
+{
+
+}
+
+void Parser::exclusive_or_expression()
+{
+
+}
+
+void Parser::inclusive_and_expresssion()
+{
+
+}
+
+void Parser::logical_and_expression()
+{
+
+}
+
+void Parser::logical_or_expression()
+{
+
+}
+
+void Parser::conditional_expression()
+{
+
+}
+
+void Parser::assignment_expression()
+{
+  /*TODO: conditional expression*/
+  unary_expression();
+  assignment_operator();
+//  assignment_expression();
+  arithmetic_expression();          /*TODO: temporary solution */
+}
+
 void Parser::expression()
 {
+  assignment_expression();
+  /*TODO: multiple expressions*/
 }
 
-void Parser::arithmetic_expression() {
+void Parser::arithmetic_expression()
+{
   term();
   arithmetic_expression_left_recursion_eliminated();
+  return ;
 }
 
-void Parser::arithmetic_expression_left_recursion_eliminated() {
+void Parser::arithmetic_expression_left_recursion_eliminated()
+{
   switch(m_lookahead.getTokenType()){
   case PLUS: case MINUS:
     match(m_lookahead.getTokenType());
@@ -177,7 +315,7 @@ void Parser::arithmetic_expression_left_recursion_eliminated() {
 }
 
 void Parser::term() {
-  recursion();
+  factor();
   term_left_recursion_eliminated();
 }
 
@@ -185,7 +323,7 @@ void Parser::term_left_recursion_eliminated() {
   switch(m_lookahead.getTokenType()){
   case MUL: case DIV:
     match(m_lookahead.getTokenType());
-    recursion();
+    factor();
     term_left_recursion_eliminated();
     return ;
   default:
@@ -194,21 +332,19 @@ void Parser::term_left_recursion_eliminated() {
   }
 }
 
-void Parser::recursion() {
+void Parser::factor() {
   switch(m_lookahead.getTokenType()){
   case L_PARENTHESIS:
     match(L_PARENTHESIS);
     arithmetic_expression();
     match(R_PARENTHESIS);
     return ;
-  case NUMBER:
-    match(NUMBER);
+  case CONSTANT:
+    match(CONSTANT);
     return ;
   default:
-    throw runtime_error("Expected ( or a digit, got <" + m_lookahead.getTokenText() + "> \n");
+    LOG_ERR(__func__, "( or constant", m_lookahead.getTokenText());
   }
-
-
 }
 
 void Parser::empty() {
@@ -247,7 +383,7 @@ void Parser::match(TokenType x)
   }
   //todo
   else{
-    LOG_ERR(x, m_lookahead.getTokenText());
+    LOG_ERR(__func__, x, m_lookahead.getTokenText());
   }
 }
 

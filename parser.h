@@ -36,13 +36,37 @@ public:
   void external_declaration();
   void translation_unit();
 
-  //expression
+  //initializer
+  void initializer();
+  void initializer_list();
+
+  //operators
+  void unary_operator();
+  void assignment_operator();
+
+  //expressions
+  void primary_expression();
+  void postfix_expression();
+  void unary_expression();
+  void cast_expression();
+  void multiplicative_expression();
+  void additive_expression();
+  void shift_expression();
+  void relational_expression();
+  void equality_expression();
+  void and_expression();
+  void exclusive_or_expression();
+  void inclusive_and_expresssion();
+  void logical_and_expression();
+  void logical_or_expression();
+  void conditional_expression();
+  void assignment_expression();
   void expression();
   void arithmetic_expression();
   void arithmetic_expression_left_recursion_eliminated();
   void term();
   void term_left_recursion_eliminated();
-  void recursion();
+  void factor();
   void empty();
 
   //block

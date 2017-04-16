@@ -14,6 +14,7 @@ Token::Token(TokenType type, string text, int value) : m_tokenType(type), m_text
 Token::Token(const Token& t){
   m_tokenType = t.getTokenType();
   m_text = t.getTokenText();
+  m_value = t.getTokenValue();
 }
 
 TokenType Token::getTokenType() const
@@ -23,7 +24,17 @@ TokenType Token::getTokenType() const
 
 string Token::getTokenText() const
 {
-  return m_text;
+  if(m_tokenType == EOF_TYPE){
+    return "empty";
+  }
+  else{
+    return m_text;
+  }
+}
+
+int Token::getTokenValue() const
+{
+  return m_value;
 }
 
 //string Token::toString()

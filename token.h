@@ -18,6 +18,7 @@ public:
   TokenType getTokenType() const;
   string getTokenText() const;
   friend ostream& operator <<(ostream&, const Token&);
+  int getTokenValue() const;
 private:
   TokenType m_tokenType;
   string m_text;

@@ -105,12 +105,12 @@ Token Scanner::nextToken()
       else if(isdigit(m_current_char)) {
         return matchDigit();
       }
-
       else{
         return Token(RESERVE, "TODO LATER");
       }
     }
   }
+  return Token(EOF_TYPE, "<EOF>");
 
 }
 
@@ -235,7 +235,7 @@ Token Scanner::matchDigit() {
           eat();
         } while(isdigit(m_current_char) ); /* todo: support float point */
         int scanned_value = stoi(buf.str());
-        return Token(NUMBER, buf.str(), scanned_value);
+        return Token(CONSTANT, buf.str(), scanned_value);
 }
 
 void Scanner::skipWS() {

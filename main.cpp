@@ -19,10 +19,12 @@ int main(int argc, char *argv[])
   */
 
 
-  string s = "long a,b,c;";
+  string s = "a=2;";
   Scanner st(s);
 //  st.unitTest();
   Parser pt(st);
-  pt.declaration();
+//  pt.declaration();
+//  pt.arithmetic_expression();
+  pt.expression_statement();
   return 0;
 }

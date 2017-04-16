@@ -1,17 +1,17 @@
 #include "utils.h"
 
-void LOG_ERR(string expected, string got)
+void LOG_ERR(string err_src, string expected, string got)
 {
-  throw  runtime_error("expected " + expected + ", got " + got);
+  throw  runtime_error("ERR: " + err_src + ": expected " + expected + ", got " + got);
 }
 
-void LOG_DBG(string function_name, string content)
+void LOG_DBG(string dbg_src, string content)
 {
-  std::cout << "DBG: " << function_name << ": " << content << std::endl;
+  std::cout << "DBG: " <<  dbg_src << ": " << content << std::endl;
 }
 
-void LOG_ERR(int expected, string got)
+void LOG_ERR(string err_src, int expected, string got)
 {
-  throw  runtime_error("expected " + std::to_string(expected) + ", got " + got);
+  throw  runtime_error("ERR: " + err_src + ": expected " + std::to_string(expected) + ", got " + got);
 
 }
