@@ -34,6 +34,7 @@ public:
   void declarator();
   void direct_declarator();
   void declaration_list();
+  void declaration_list_left_recursion_eliminated();
   void external_declaration();
   void translation_unit();
 

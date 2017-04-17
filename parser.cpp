@@ -231,7 +231,21 @@ void Parser::direct_declarator()
 
 void Parser::declaration_list()
 {
+  declaration();
+  declaration_list_left_recursion_eliminated();
+}
 
+void Parser::declaration_list_left_recursion_eliminated()
+{
+  switch(m_lookahead.getTokenType()){
+  case VOID: case BOOL: case CHAR: case SHORT: case INT: case LONG: case FLOAT: case DOUBLE:
+    declaration();
+    declaration_list_left_recursion_eliminated();
+    break;
+  default:
+    empty();
+    break;
+  }
 }
 
 void Parser::external_declaration()
