@@ -186,8 +186,8 @@ Token Scanner::matchKeyword(){
         else if (s == "else") {
           return Token(ELSE, s);
         }
-        else if (s == "when") {
-          return Token(WHEN, s);
+        else if (s == "for") {
+          return Token(FOR, s);
         }
         else if (s == "do") {
           return Token(DO, s);

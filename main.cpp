@@ -19,12 +19,12 @@ int main(int argc, char *argv[])
   */
 
 
-  string s = "a=2;";
+  string s = "if(a=3){a=3;}";
   Scanner st(s);
 //  st.unitTest();
   Parser pt(st);
 //  pt.declaration();
 //  pt.arithmetic_expression();
-  pt.expression_statement();
+  pt.primary_statement();
   return 0;
 }

@@ -13,6 +13,7 @@ public:
 
   //statements
   void primary_statement();
+  void labeled_statement();
   void compound_statement();
   void selection_statement();
   void iteration_statement();
@@ -72,6 +73,7 @@ public:
   //block
   void block_item();
   void block_item_list();
+  void block_item_list_left_recursion_eliminated();
 
   //functions
   void function_definition();

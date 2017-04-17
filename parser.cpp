@@ -11,20 +11,103 @@ Parser::Parser(const Scanner& s) : m_lexer(s)
 //statements
 void Parser::primary_statement()
 {
+  switch(m_lookahead.getTokenType()){
+  case CASE:case DEFAULT:
+    labeled_statement();
+    return ;
+  case L_BRACE:
+    compound_statement();
+    return;
+  case IDENTIFIER: case CONSTANT: case LITERAL:
+    expression_statement();
+    return;
+  case IF:case SWITCH:
+    selection_statement();
+    return;
+  case FOR:case DO: case WHILE:
+    iteration_statement();
+    return;
+  default:
+    LOG_ERR(__func__, "compound/iteration/selection statement", "unsupported statement");
+    return;
+  }
+}
+
+void Parser::labeled_statement()
+{
+
 }
 
 void Parser::compound_statement()
 {
+  match(L_BRACE);
+  if(m_lookahead.getTokenType() == R_BRACE){
+    match(R_BRACE);
+  }
+  else{
+    block_item_list();
+    match(R_BRACE);
+  }
+  LOG_DBG(__func__, "GOT a compound statement");
 
 }
 
 void Parser::selection_statement()
 {
-
+  if(m_lookahead.getTokenType() == IF){
+    match(IF);
+    match(L_PARENTHESIS);
+    expression();
+    match(R_PARENTHESIS);
+    primary_statement();
+    if(m_lookahead.getTokenType() == ELSE){
+      match(ELSE);
+      primary_statement();
+    }
+  }
+  else if(m_lookahead.getTokenType() == SWITCH){
+    match(SWITCH);
+    match(L_PARENTHESIS);
+    expression();
+    match(R_PARENTHESIS);
+    primary_statement();
+  }
+  LOG_DBG(__func__, "GOT a selection statement");
+  return;
 }
 
 void Parser::iteration_statement()
 {
+  switch(m_lookahead.getTokenType()){
+  case WHILE:
+    match(WHILE);
+    match(L_PARENTHESIS);
+    expression();
+    match(R_PARENTHESIS);
+    primary_statement();
+    break;
+  case DO:
+    match(DO);
+    primary_statement();
+    match(WHILE);
+    match(L_PARENTHESIS);
+    expression();
+    match(R_PARENTHESIS);
+    match(SEMICOLON);
+    break;
+  case FOR:
+    match(FOR);
+    match(L_PARENTHESIS);
+    /* form: for(a=5;b=6;c=7) */
+    expression_statement();
+    expression_statement();
+    expression();
+    match(R_PARENTHESIS);
+    primary_statement();
+    /* todo: other forms, e.g. for(a=6;b=6;); for(int a=6;b=6;c=7); for(int a= 6; b=6;); */
+    break;
+  }
+  LOG_DBG(__func__, "GOT a iteration statement");
 
 }
 
@@ -37,6 +120,7 @@ void Parser::expression_statement()
 {
   expression();
   match(SEMICOLON);
+  LOG_DBG(__func__, "GOT an expression statement");
 }
 
 
@@ -52,12 +136,12 @@ void Parser::type_specifier()
 {
   switch(m_lookahead.getTokenType())
   {
-    case VOID: case BOOL: case CHAR: case SHORT: case INT: case LONG: case FLOAT: case DOUBLE:
-      match(m_lookahead.getTokenType());
-      return ;
-    default:
-      LOG_ERR(__func__, "type_specifier", m_lookahead.getTokenText());
-      return ;
+  case VOID: case BOOL: case CHAR: case SHORT: case INT: case LONG: case FLOAT: case DOUBLE:
+    match(m_lookahead.getTokenType());
+    return ;
+  default:
+    LOG_ERR(__func__, "type_specifier", m_lookahead.getTokenText());
+    return ;
   }
 
 }
@@ -197,7 +281,7 @@ void Parser::primary_expression()
     break;
   case L_PARENTHESIS:
     match(L_PARENTHESIS);
-    primary_expression();
+    expression();
     match(R_PARENTHESIS);
     break;
   default:
@@ -283,7 +367,7 @@ void Parser::assignment_expression()
   /*TODO: conditional expression*/
   unary_expression();
   assignment_operator();
-//  assignment_expression();
+  //  assignment_expression();
   arithmetic_expression();          /*TODO: temporary solution */
 }
 
@@ -355,12 +439,34 @@ void Parser::empty() {
 //block
 void Parser::block_item()
 {
+  switch(m_lookahead.getTokenType()){
+  case INT:case BOOL:case CHAR:case VOID:case LONG:case SHORT:case FLOAT:case DOUBLE:   /*todo: other types, or write some functions to do this kind of thing */
+    declaration();
+    return ;
+  default:                  /*todo: there maybe other cases here */
+    primary_statement();
+    return;
+  }
 
 }
 
 void Parser::block_item_list()
 {
+  block_item();
+  block_item_list_left_recursion_eliminated();
+}
 
+void Parser::block_item_list_left_recursion_eliminated()
+{
+  switch(m_lookahead.getTokenType()){
+  case INT:case BOOL:case CHAR:case VOID:case LONG:case SHORT:case FLOAT:case DOUBLE:case FOR:case WHILE: case DO: case IF:case SWITCH:   /*todo: modify later */
+    block_item();
+    block_item_list_left_recursion_eliminated();
+    return;
+  default:
+    empty();
+    return;
+  }
 }
 
 //function
