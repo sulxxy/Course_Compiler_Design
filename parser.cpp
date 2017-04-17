@@ -118,8 +118,13 @@ void Parser::jump_statement()
 
 void Parser::expression_statement()
 {
-  expression();
-  match(SEMICOLON);
+  if(m_lookahead.getTokenType() == SEMICOLON){
+    match(SEMICOLON);
+  }
+  else{
+    expression();
+    match(SEMICOLON);
+  }
   LOG_DBG(__func__, "GOT an expression statement");
 }
 
@@ -196,7 +201,10 @@ void Parser::init_declarator_list_left_recursion_eliminated()
 void Parser::init_declarator()
 {
   declarator();
-  /*TODO: add initializer*/
+  if(m_lookahead.getTokenType() == ASSIGN){
+    match(ASSIGN);
+    initializer();
+  }
 }
 
 void Parser::declarator()
@@ -238,7 +246,9 @@ void Parser::translation_unit()
 
 void Parser::initializer()
 {
-
+//  assignment_expression();
+  arithmetic_expression();
+  /*TODO: initializer_list */
 }
 
 void Parser::initializer_list()
@@ -459,7 +469,7 @@ void Parser::block_item_list()
 void Parser::block_item_list_left_recursion_eliminated()
 {
   switch(m_lookahead.getTokenType()){
-  case INT:case BOOL:case CHAR:case VOID:case LONG:case SHORT:case FLOAT:case DOUBLE:case FOR:case WHILE: case DO: case IF:case SWITCH:   /*todo: modify later */
+  case INT:case BOOL:case CHAR:case VOID:case LONG:case SHORT:case FLOAT:case DOUBLE:case FOR:case WHILE: case DO: case IF:case SWITCH: case IDENTIFIER: case CONSTANT:  /*todo: modify later */
     block_item();
     block_item_list_left_recursion_eliminated();
     return;
