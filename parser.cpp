@@ -168,13 +168,13 @@ void Parser::declaration()
   declaration_specifiers();
   if(m_lookahead.getTokenType() == SEMICOLON){
     match(SEMICOLON);
-    LOG_DBG(__func__, "got a declaration");      //e.g. int ();
+    LOG_DBG(__func__, "GOT a declaration");      //e.g. int ();
     return;
   }
   else{
     init_declarator_list();
     match(SEMICOLON);
-    LOG_DBG(__func__, "got a declaration");     //e.g. int a;
+    LOG_DBG(__func__, "GOT a declaration");     //e.g. int a;
     return ;
   }
 
@@ -217,16 +217,39 @@ void Parser::direct_declarator()
 {
   if(m_lookahead.getTokenType() == IDENTIFIER){
     match(IDENTIFIER);
-    return;
   }
   else if(m_lookahead.getTokenType() == L_PARENTHESIS){
+    match(L_PARENTHESIS);
     declarator();
     match(R_PARENTHESIS);
   }
-  else{
+  direct_declarator_left_recursion_eliminated();
     /*TODO*/
-  }
+}
 
+void Parser::direct_declarator_left_recursion_eliminated()
+{
+  switch(m_lookahead.getTokenType()){
+  case L_PARENTHESIS:
+    match(L_PARENTHESIS);
+    if(is_declaration_type(m_lookahead.getTokenType())){
+      parameter_type_list();
+    }
+    else if(m_lookahead.getTokenType() == IDENTIFIER){
+      identifier_list();
+    }
+    match(R_PARENTHESIS);
+    direct_declarator_left_recursion_eliminated();
+    break;
+  case L_BRACKET:
+    match(L_BRACKET);
+    LOG_ERR(__func__, "[", "types or productions that currently not supported");
+    direct_declarator_left_recursion_eliminated();
+    break;
+  default:
+    break;
+  }
+  return ;
 }
 
 void Parser::declaration_list()
@@ -251,6 +274,61 @@ void Parser::declaration_list_left_recursion_eliminated()
 void Parser::external_declaration()
 {
 
+}
+
+void Parser::parameter_type_list()
+{
+  parameter_list();
+  /*TODO */
+}
+
+void Parser::parameter_list()
+{
+  parameter_declaration();
+  parameter_list_left_recursion_eliminated();
+}
+
+void Parser::parameter_list_left_recursion_eliminated()
+{
+  if(m_lookahead.getTokenType() == COMMA){
+    match(COMMA);
+    parameter_declaration();
+    parameter_list_left_recursion_eliminated();
+  }
+  else{
+    empty();
+  }
+  return;
+}
+
+void Parser::parameter_declaration()
+{
+  declaration_specifiers();
+  if(is_declaration_type(m_lookahead.getTokenType())){
+    declarator();
+    /*TODO: abstract declarator */
+  }
+  return ;
+}
+
+void Parser::identifier_list()
+{
+  match(IDENTIFIER);
+  identifier_list_left_recursion_eliminated();
+
+}
+
+void Parser::identifier_list_left_recursion_eliminated()
+{
+  if(m_lookahead.getTokenType() == COMMA){
+    match(COMMA);
+    match(IDENTIFIER);
+    identifier_list_left_recursion_eliminated();
+  }
+  else{
+    empty();
+  }
+  return ;
 }
 
 void Parser::translation_unit()
@@ -496,7 +574,16 @@ void Parser::block_item_list_left_recursion_eliminated()
 //function
 void Parser::function_definition()
 {
-
+  declaration_specifiers();
+  declarator();
+  if(m_lookahead.getTokenType() == L_BRACE){
+    compound_statement();
+  }
+  else{
+    declaration_list();
+    compound_statement();
+  }
+  LOG_DBG(__func__, "GOT a function definition" );
 }
 
 void Parser::function_declaration()
@@ -519,4 +606,15 @@ void Parser::match(TokenType x)
 
 void Parser::eat() {
   m_lookahead = m_lexer.nextToken();
+}
+
+bool Parser::is_declaration_type(TokenType t)
+{
+  switch(t)
+  {
+  case VOID: case BOOL: case CHAR: case SHORT: case INT: case LONG: case FLOAT: case DOUBLE:
+    return true;
+  default:
+    return false;
+  }
 }

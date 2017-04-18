@@ -33,10 +33,19 @@ public:
   void init_declarator();
   void declarator();
   void direct_declarator();
+  void direct_declarator_left_recursion_eliminated();
   void declaration_list();
   void declaration_list_left_recursion_eliminated();
   void external_declaration();
+  void parameter_type_list();
+  void parameter_list();
+  void parameter_list_left_recursion_eliminated();
+  void parameter_declaration();
+  void identifier_list();
+  void identifier_list_left_recursion_eliminated();
+
   void translation_unit();
+
 
   //initializer
   void initializer();
@@ -84,6 +93,7 @@ public:
   //helper functions
   void match(TokenType);
   void eat();
+  bool is_declaration_type(TokenType);
 private:
   Scanner m_lexer;
   Token m_lookahead;

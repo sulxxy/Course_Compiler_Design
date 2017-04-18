@@ -33,7 +33,7 @@ enum TokenType {
   NE,   /* != */
   LT,   /* < */
   GT,   /* > */
-  EQ,   /* == */
+  EQ,   /* ==  23*/
 
   /* keywords */
   IF,
@@ -50,7 +50,7 @@ enum TokenType {
   ENUM,
   EXTERN,
   INLINE,
-  RETURN,
+  RETURN,    /*38*/
 
 //  CLASS,
 

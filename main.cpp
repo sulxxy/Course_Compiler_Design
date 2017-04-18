@@ -19,12 +19,12 @@ int main(int argc, char *argv[])
   */
 
 
-  string s ="int a; int b=3;";
+  string s ="int func(){int a; int b=3;}";
   Scanner st(s);
 //  st.unitTest();
   Parser pt(st);
 //  pt.declaration();
 //  pt.arithmetic_expression();
-  pt.declaration_list();
+  pt.function_definition();
   return 0;
 }
