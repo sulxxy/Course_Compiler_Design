@@ -273,7 +273,8 @@ void Parser::declaration_list_left_recursion_eliminated()
 
 void Parser::external_declaration()
 {
-
+  function_definition();
+  /*TODO: add declaration*/
 }
 
 void Parser::parameter_type_list()
@@ -333,6 +334,20 @@ void Parser::identifier_list_left_recursion_eliminated()
 
 void Parser::translation_unit()
 {
+  external_declaration();
+  translation_unit_left_recursion_eliminated();
+}
+
+void Parser::translation_unit_left_recursion_eliminated()
+{
+  if(is_declaration_type(m_lookahead.getTokenType())){
+    external_declaration();
+    translation_unit_left_recursion_eliminated();
+  }
+  else{
+    empty();
+  }
+  return ;
 
 }
 
@@ -585,12 +600,6 @@ void Parser::function_definition()
   }
   LOG_DBG(__func__, "GOT a function definition" );
 }
-
-void Parser::function_declaration()
-{
-
-}
-
 
 //helper functions
 void Parser::match(TokenType x)

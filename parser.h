@@ -44,8 +44,9 @@ public:
   void identifier_list();
   void identifier_list_left_recursion_eliminated();
 
+  // starting
   void translation_unit();
-
+  void translation_unit_left_recursion_eliminated();
 
   //initializer
   void initializer();
@@ -87,8 +88,6 @@ public:
 
   //functions
   void function_definition();
-  void function_declaration();
-
 
   //helper functions
   void match(TokenType);
