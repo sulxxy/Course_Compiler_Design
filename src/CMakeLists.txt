@@ -10,7 +10,7 @@ string(REGEX REPLACE "\n" "" llvm_cxxflags ${llvm_cxxflags})
 
 SET(CMAKE_CXX_FLAGS ${llvm_cxxflags})
 
-add_executable(main main.cpp)
 add_executable(lexer lexer.cpp)
+add_executable(parser parser.cpp)
 
 
